@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: pathology-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: pathology-db
+          property: host
+      - key: DB_USER
+        fromDatabase:
+          name: pathology-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: pathology-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: pathology-db
+          property: database
+      - key: DB_PORT
+        fromDatabase:
+          name: pathology-db
+          property: port
+      - key: JWT_SECRET
+        generateValue: true
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+databases:
+  - name: pathology-db
+    databaseName: pathology_lab
+    user: pathology_admin
