@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Search, Bell, Settings, LogOut, FileText, Users, Calendar, Activity, Clock, CheckCircle2 } from 'lucide-react';
+import { Search, Bell, LogOut, FileText, Users, Calendar, Activity, Clock, CheckCircle2 } from 'lucide-react';
 
 const data = [
   { name: 'Nov \'22', completed: 400 },
@@ -253,7 +253,7 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {mockScorecards.map((score, i) => (
+                    {mockScorecards.map((score) => (
                       <tr key={score.id} className="border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
                         <td className="px-6 py-4">
                           <div className="font-semibold text-white">{score.name}</div>
