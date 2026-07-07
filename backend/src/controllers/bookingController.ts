@@ -91,7 +91,9 @@ export const cancelBooking = async (req: Request, res: Response) => {
       if (appt.actual_arrival_time) {
         cancellationFee = 100; // Technician already arrived
       } else if (appt.scheduled_date && appt.scheduled_time) {
-        const scheduledDateTime = new Date(\`\${appt.scheduled_date.toISOString().split('T')[0]}T\${appt.scheduled_time}\`);
+        const dateStr = appt.scheduled_date.toISOString().split('T')[0];
+        const timeStr = appt.scheduled_time;
+        const scheduledDateTime = new Date(dateStr + 'T' + timeStr);
         const timeDiffMins = (scheduledDateTime.getTime() - Date.now()) / 60000;
         
         if (timeDiffMins < 30) {
@@ -102,7 +104,7 @@ export const cancelBooking = async (req: Request, res: Response) => {
 
     // Update booking
     await query(
-      `UPDATE bookings SET status = 'CANCELLED', cancellation_fee = $1, payment_status = 'REFUNDED' WHERE id = $2`,
+      "UPDATE bookings SET status = 'CANCELLED', cancellation_fee = $1, payment_status = 'REFUNDED' WHERE id = $2",
       [cancellationFee, id]
     );
 
@@ -116,14 +118,15 @@ export const cancelBooking = async (req: Request, res: Response) => {
 export const getBookingHistory = async (req: Request, res: Response) => {
   const { userId } = req.params;
   try {
-    const history = await query(`
-      SELECT b.id, b.created_at, b.status, b.total_amount, p.first_name, p.last_name, p.dob, r.local_file_path as report_url
-      FROM bookings b
-      JOIN patients p ON b.patient_id = p.id
-      LEFT JOIN reports r ON b.id = r.booking_id
-      WHERE b.user_id = $1
-      ORDER BY b.created_at DESC
-    `, [userId]);
+    const history = await query(
+      "SELECT b.id, b.created_at, b.status, b.total_amount, p.first_name, p.last_name, p.dob, r.local_file_path as report_url " +
+      "FROM bookings b " +
+      "JOIN patients p ON b.patient_id = p.id " +
+      "LEFT JOIN reports r ON b.id = r.booking_id " +
+      "WHERE b.user_id = $1 " +
+      "ORDER BY b.created_at DESC", 
+      [userId]
+    );
     res.json(history.rows);
   } catch (err) {
     console.error('Error fetching history:', err);
