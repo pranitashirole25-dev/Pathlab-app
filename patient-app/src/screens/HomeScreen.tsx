@@ -1,20 +1,71 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-
-const CATEGORIES = [
-  { id: '1', name: 'Full Body Checkup', icon: '🩺', count: 12 },
-  { id: '2', name: 'Diabetes', icon: '🩸', count: 8 },
-  { id: '3', name: 'Thyroid', icon: '🦋', count: 4 },
-  { id: '4', name: 'Fever', icon: '🤒', count: 6 },
-];
-
-const POPULAR_TESTS = [
-  { id: 't1', name: 'Comprehensive Full Body Checkup', params: 84, price: 2999, originalPrice: 4500, time: '10-12 hrs fasting' },
-  { id: 't2', name: 'Advanced Lipid Profile', params: 8, price: 799, originalPrice: 1200, time: '12 hrs fasting' },
-  { id: 't3', name: 'Thyroid Profile Total (T3, T4, TSH)', params: 3, price: 499, originalPrice: 800, time: 'Non-fasting' },
-];
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Sparkles, Bone, Heart, Activity, Droplet, Dna, Users, Thermometer, TestTube, Stethoscope } from 'lucide-react-native';
 
 export default function HomeScreen({ navigation }: any) {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [popularTests, setPopularTests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const getCategoryIcon = (name: string, size = 28) => {
+    const lower = name.toLowerCase();
+    
+    // Colorful exact/partial matches based on actual data
+    if (lower.includes('full body')) return <Activity size={size} color="#10b981" />; // Emerald
+    if (lower.includes('senior')) return <Users size={size} color="#8b5cf6" />; // Violet
+    if (lower.includes('diabet')) return <Droplet size={size} color="#ef4444" />; // Red
+    if (lower.includes('anc') || lower.includes('pregnancy')) return <Heart size={size} color="#ec4899" />; // Pink
+    if (lower.includes('arthritis') || lower.includes('bone')) return <Bone size={size} color="#f97316" />; // Orange
+    
+    // Old matches
+    if (lower.includes('skin') || lower.includes('women')) return <Sparkles size={size} color="#ec4899" />;
+    if (lower.includes('heart') || lower.includes('cardiac') || lower.includes('lipid')) return <Heart size={size} color="#ef4444" />;
+    if (lower.includes('thyroid')) return <Activity size={size} color="#8b5cf6" />;
+    if (lower.includes('tumor') || lower.includes('cancer')) return <Dna size={size} color="#6366f1" />;
+    if (lower.includes('premarital') || lower.includes('couple')) return <Users size={size} color="#f43f5e" />;
+    if (lower.includes('fever') || lower.includes('infection')) return <Thermometer size={size} color="#f59e0b" />;
+    if (lower.includes('liver') || lower.includes('hepatic')) return <Activity size={size} color="#eab308" />;
+    if (lower.includes('kidney') || lower.includes('renal')) return <Activity size={size} color="#3b82f6" />;
+    if (lower.includes('thalassemia') || lower.includes('apla')) return <TestTube size={size} color="#14b8a6" />;
+    
+    return <Stethoscope size={size} color="#0ea5e9" />; // Default brand blue
+  };
+
+  useEffect(() => {
+    fetch('https://pathology-backend.onrender.com/api/catalog/tests')
+      .then(res => res.json())
+      .then(data => {
+        // Derive unique categories
+        const catMap: Record<string, number> = {};
+        data.forEach((t: any) => {
+          catMap[t.category] = (catMap[t.category] || 0) + 1;
+        });
+        
+        const catArray = Object.keys(catMap).map((k, i) => ({
+          id: i.toString(),
+          name: k,
+          icon: getCategoryIcon(k), 
+          count: catMap[k]
+        }));
+        
+        setCategories(catArray.slice(0, 5)); // Show top 5 categories
+        setPopularTests(data.slice(0, 4)); // Show top 4 packages
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching home data:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#0ea5e9" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
@@ -34,16 +85,22 @@ export default function HomeScreen({ navigation }: any) {
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Shop by Category</Text>
-          <TouchableOpacity><Text style={styles.seeAll}>See All</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Packages')}>
+            <Text style={styles.seeAll}>See All</Text>
+          </TouchableOpacity>
         </View>
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesList}>
-          {CATEGORIES.map(cat => (
-            <TouchableOpacity key={cat.id} style={styles.categoryCard}>
+          {categories.map(cat => (
+            <TouchableOpacity 
+              key={cat.id} 
+              style={styles.categoryCard}
+              onPress={() => navigation.navigate('Packages', { category: cat.name })}
+            >
               <View style={styles.categoryIconContainer}>
-                <Text style={styles.categoryIcon}>{cat.icon}</Text>
+                {cat.icon}
               </View>
-              <Text style={styles.categoryName}>{cat.name}</Text>
+              <Text style={styles.categoryName} numberOfLines={2}>{cat.name}</Text>
               <Text style={styles.categoryCount}>{cat.count} Tests</Text>
             </TouchableOpacity>
           ))}
@@ -53,21 +110,19 @@ export default function HomeScreen({ navigation }: any) {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Popular Tests & Packages</Text>
         
-        {POPULAR_TESTS.map(test => (
+        {popularTests.map(test => (
           <View key={test.id} style={styles.testCard}>
             <View style={styles.testHeader}>
               <Text style={styles.testName}>{test.name}</Text>
             </View>
             
             <View style={styles.testDetails}>
-              <Text style={styles.testDetailTag}>📊 {test.params} Parameters</Text>
-              <Text style={styles.testDetailTag}>⏱ {test.time}</Text>
+              <Text style={styles.testDetailTag}>📊 {test.type}</Text>
             </View>
             
             <View style={styles.testFooter}>
               <View>
                 <Text style={styles.testPrice}>₹{test.price}</Text>
-                <Text style={styles.testOriginalPrice}>₹{test.originalPrice}</Text>
               </View>
               <TouchableOpacity 
                 style={styles.addButton}
