@@ -2,6 +2,7 @@ services:
   - type: web
     name: pathology-backend
     env: node
+    plan: free
     rootDir: backend
     buildCommand: npm install && npm run build
     startCommand: npm start
@@ -35,5 +36,6 @@ services:
 
 databases:
   - name: pathology-db
+    plan: free
     databaseName: pathology_lab
     user: pathology_admin
