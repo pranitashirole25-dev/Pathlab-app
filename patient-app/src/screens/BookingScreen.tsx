@@ -34,9 +34,27 @@ export default function BookingScreen({ route, navigation }: any) {
     setPaymentModalVisible(true);
   };
 
-  const processMockPayment = () => {
+  const processMockPayment = async () => {
     setProcessing(true);
-    setTimeout(() => {
+    
+    try {
+      // Create real booking in database
+      const response = await fetch('https://pathology-backend-ipnf.onrender.com/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 1, // Mocked user ID from init script
+          patientId: 1, // Mocked patient ID from init script
+          testIds: bookingItems.map((item: any) => item.id),
+          collectionType: collectionType,
+          addressId: collectionType === 'HOME' ? 1 : null
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create booking on server');
+      }
+
       setProcessing(false);
       setPaymentModalVisible(false);
       clearCart();
@@ -45,7 +63,11 @@ export default function BookingScreen({ route, navigation }: any) {
         slot: selectedSlot, 
         itemsCount: bookingItems.length 
       });
-    }, 2000);
+    } catch (err) {
+      console.error(err);
+      alert('Error creating booking. Please try again.');
+      setProcessing(false);
+    }
   };
 
   const calculateDiscount = () => {

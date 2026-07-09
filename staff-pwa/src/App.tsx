@@ -1,16 +1,50 @@
-import { useState } from 'react';
-import { MapPin, Clock, Phone, CheckCircle, Navigation, ShieldCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MapPin, Clock, Phone, CheckCircle, Navigation, ShieldCheck, Activity } from 'lucide-react';
 
 export default function App() {
   const [view, setView] = useState<'LOGIN' | 'DASHBOARD' | 'APPOINTMENT'>('LOGIN');
   const [otp, setOtp] = useState('');
   const [patientOtp, setPatientOtp] = useState('');
+  
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
 
-  // Mock data
-  const appointments = [
-    { id: 1, patient: 'John Doe', time: '09:00 AM', location: 'Bandra West, Mumbai', status: 'PENDING', tests: ['Lipid Profile', 'CBC'] },
-    { id: 2, patient: 'Sarah Smith', time: '11:30 AM', location: 'Andheri East, Mumbai', status: 'PENDING', tests: ['Thyroid Panel'] }
-  ];
+  const fetchAppointments = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/bookings/staff');
+      const data = await res.json();
+      setAppointments(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (view === 'DASHBOARD') {
+      fetchAppointments();
+    }
+  }, [view]);
+
+  const updateStatus = async (id: string, status: string) => {
+    try {
+      await fetch(`https://pathology-backend-ipnf.onrender.com/api/bookings/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (status === 'COMPLETED') {
+        setView('DASHBOARD');
+      } else {
+        fetchAppointments();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (view === 'LOGIN') {
     return (
@@ -56,18 +90,27 @@ export default function App() {
       <div className="min-h-screen bg-slate-50 pb-20">
         <div className="bg-white px-6 pt-12 pb-6 shadow-sm rounded-b-3xl">
           <h1 className="text-2xl font-bold text-darkText">Hello, Rahul 👋</h1>
-          <p className="text-lightText mt-1">You have 2 pending appointments today.</p>
+          <p className="text-lightText mt-1">You have {appointments.length} pending appointments today.</p>
         </div>
 
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-bold text-darkText mb-2">Today's Schedule</h2>
           
-          {appointments.map((apt) => (
+          {loading ? (
+            <div className="flex justify-center p-8 text-primary">
+              <Activity className="w-8 h-8 animate-spin" />
+            </div>
+          ) : appointments.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center text-slate-500 shadow-sm">
+              <CheckCircle className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+              <p>No appointments pending!</p>
+            </div>
+          ) : appointments.map((apt) => (
             <div key={apt.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-bold text-darkText text-lg">{apt.patient}</h3>
-                <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-lg flex items-center">
-                  <Clock className="w-3 h-3 mr-1" /> {apt.time}
+                <span className={`text-xs font-bold px-2 py-1 rounded-lg flex items-center ${apt.status === 'IN_PROGRESS' ? 'bg-primary/20 text-primary' : 'bg-amber-100 text-amber-700'}`}>
+                  <Clock className="w-3 h-3 mr-1" /> {apt.status === 'IN_PROGRESS' ? 'Ongoing' : apt.time}
                 </span>
               </div>
               
@@ -77,13 +120,13 @@ export default function App() {
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {apt.tests.map(test => (
+                {apt.tests.map((test: string) => (
                   <span key={test} className="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-md">{test}</span>
                 ))}
               </div>
 
               <button 
-                onClick={() => setView('APPOINTMENT')}
+                onClick={() => { setSelectedAppointment(apt); setView('APPOINTMENT'); }}
                 className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold py-3 rounded-xl transition-colors"
               >
                 View Details & Start
@@ -107,8 +150,8 @@ export default function App() {
 
         <div className="flex-1 p-6">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
-            <h2 className="font-bold text-2xl text-darkText mb-1">John Doe</h2>
-            <p className="text-lightText mb-6">+91 98765 43210</p>
+            <h2 className="font-bold text-2xl text-darkText mb-1">{selectedAppointment?.patient}</h2>
+            <p className="text-lightText mb-6">{selectedAppointment?.location}</p>
             
             <div className="flex space-x-3 mb-6">
               <button className="flex-1 bg-green-100 text-green-700 py-3 rounded-xl font-bold flex justify-center items-center">
@@ -128,7 +171,7 @@ export default function App() {
                 Ask the patient for the 4-digit OTP sent to their WhatsApp to verify your arrival time and prevent delay penalties.
               </p>
               
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 mb-6">
                 <input 
                   type="text" 
                   placeholder="OTP" 
@@ -137,18 +180,30 @@ export default function App() {
                   className="flex-1 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary outline-none tracking-widest text-center font-bold" 
                   maxLength={4}
                 />
-                <button 
-                  onClick={() => alert('Arrival Confirmed! Penalty timer stopped.')}
-                  className="bg-primary hover:bg-sky-600 text-white font-bold px-6 py-3 rounded-xl transition-colors"
-                >
-                  Verify
-                </button>
+                {selectedAppointment?.status !== 'IN_PROGRESS' && (
+                  <button 
+                    onClick={() => {
+                      if (patientOtp.length === 4) {
+                        updateStatus(selectedAppointment.id, 'IN_PROGRESS');
+                        alert('Arrival Confirmed! Penalty timer stopped.');
+                      } else {
+                        alert('Enter 4 digit OTP');
+                      }
+                    }}
+                    className="bg-primary hover:bg-sky-600 text-white font-bold px-6 py-3 rounded-xl transition-colors"
+                  >
+                    Verify
+                  </button>
+                )}
               </div>
             </div>
           </div>
 
           <button 
-            onClick={() => { alert('Sample collected successfully!'); setView('DASHBOARD'); }}
+            onClick={() => { 
+              updateStatus(selectedAppointment.id, 'COMPLETED');
+              alert('Sample collected successfully!'); 
+            }}
             className="w-full bg-darkText text-white font-bold py-4 rounded-xl flex justify-center items-center shadow-lg"
           >
             <CheckCircle className="w-5 h-5 mr-2" /> Mark Sample Collected

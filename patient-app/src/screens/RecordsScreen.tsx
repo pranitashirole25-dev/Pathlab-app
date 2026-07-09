@@ -3,12 +3,23 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform, Modal } f
 import { FileText, Download } from 'lucide-react-native';
 
 export default function RecordsScreen() {
-  // Mock history
-  const history = [
-    { id: '1', patient: 'Ravi Kumar', age: 65, test: 'Comprehensive Heart Panel', date: 'Oct 15, 2023', status: 'COMPLETED' },
-    { id: '2', patient: 'Amit Kumar', age: 34, test: 'Lipid Profile', date: 'Sep 20, 2023', status: 'COMPLETED' },
-  ];
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [downloadModalVisible, setDownloadModalVisible] = useState(false);
+
+  React.useEffect(() => {
+    // Hardcoded userId 1 for demo purposes
+    fetch('https://pathology-backend-ipnf.onrender.com/api/bookings/history/1')
+      .then(res => res.json())
+      .then(data => {
+        setHistory(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching history:', err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleDownload = () => {
     if (Platform.OS === 'web') {
@@ -52,26 +63,46 @@ export default function RecordsScreen() {
 
       <FlatList
         data={history}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ padding: 16 }}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <View>
-                <Text style={styles.patientName}>{item.patient} (Age {item.age})</Text>
-                <Text style={styles.testName}>{item.test}</Text>
-              </View>
-              <FileText color="#272a56" size={24} />
-            </View>
-            <View style={styles.cardFooter}>
-              <Text style={styles.date}>{item.date}</Text>
-              <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload}>
-                <Download color="#fff" size={16} style={{ marginRight: 6 }} />
-                <Text style={styles.downloadText}>Download Report</Text>
-              </TouchableOpacity>
-            </View>
+        ListEmptyComponent={
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={{ color: '#64748b' }}>
+              {loading ? 'Loading your records...' : 'No past records found.'}
+            </Text>
           </View>
-        )}
+        }
+        renderItem={({ item }) => {
+          // Format date if available
+          const dateStr = item.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A';
+          // Since it's from DB, the age isn't directly returned but we have dob. We can calculate or just show DOB.
+          const age = item.dob ? Math.abs(new Date(Date.now() - new Date(item.dob).getTime()).getUTCFullYear() - 1970) : '';
+          
+          return (
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <View style={{ flex: 1, paddingRight: 8 }}>
+                  <Text style={styles.patientName}>{item.first_name} {item.last_name} {age ? `(Age ${age})` : ''}</Text>
+                  <Text style={styles.testName}>Booking #{item.id} - {item.status}</Text>
+                </View>
+                <FileText color="#272a56" size={24} />
+              </View>
+              <View style={styles.cardFooter}>
+                <Text style={styles.date}>{dateStr}</Text>
+                {item.status === 'COMPLETED' ? (
+                  <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload}>
+                    <Download color="#fff" size={16} style={{ marginRight: 6 }} />
+                    <Text style={styles.downloadText}>Download Report</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <Text style={{color: '#eab308', fontWeight: 'bold', fontSize: 12}}>
+                    {item.status === 'PENDING' ? 'Awaiting Tech' : item.status}
+                  </Text>
+                )}
+              </View>
+            </View>
+          );
+        }}
       />
     </View>
   );
