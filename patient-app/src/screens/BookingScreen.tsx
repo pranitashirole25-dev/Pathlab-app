@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Linking } from 'react-native';
 import { User } from 'lucide-react-native';
+import { useCart } from '../context/CartContext';
 
 export default function BookingScreen({ route, navigation }: any) {
   const { testName, price, tests } = route.params;
+  const { clearCart } = useCart();
   
   // Normalize tests: either an array from TestsScreen or a single test from PackagesScreen
   const bookingItems = tests || [{ name: testName, price: price }];
@@ -27,19 +29,14 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const handleConfirm = () => {
     // Mock Razorpay / Payment Gateway Redirect
-    Alert.alert(
-      "Redirecting to Payment Gateway",
-      `You will be redirected to Razorpay to pay ₹${calculateTotal()}.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Proceed", onPress: () => {
-          setTimeout(() => {
-            alert(`Payment Successful! Booking Confirmed for ${bookingItems.length} item(s) at ${selectedSlot}.`);
-            navigation.navigate('MainApp', { screen: 'Home' });
-          }, 1000);
-        }}
-      ]
-    );
+    // Open actual URL to simulate the payment gateway redirect
+    Linking.openURL('https://razorpay.com/').then(() => {
+      setTimeout(() => {
+        alert(`Payment Simulated! Booking Confirmed for ${bookingItems.length} item(s) at ${selectedSlot}.`);
+        clearCart();
+        navigation.navigate('MainApp', { screen: 'Home' });
+      }, 1000);
+    });
   };
 
   const calculateDiscount = () => {

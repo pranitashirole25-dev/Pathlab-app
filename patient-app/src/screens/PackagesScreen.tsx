@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
+import { useCart } from '../context/CartContext';
 
 export default function PackagesScreen({ route, navigation }: any) {
   const [packages, setPackages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [cart, setCart] = useState<any[]>([]);
+  const { cart, toggleCart } = useCart();
   const categoryFilter = route.params?.category;
 
   useEffect(() => {
@@ -32,15 +33,6 @@ export default function PackagesScreen({ route, navigation }: any) {
       </View>
     );
   }
-
-  const toggleCart = (item: any) => {
-    const exists = cart.find(t => t.id === item.id);
-    if (exists) {
-      setCart(cart.filter(t => t.id !== item.id));
-    } else {
-      setCart([...cart, item]);
-    }
-  };
 
   const renderItem = ({ item }: { item: any }) => {
     const isAdded = cart.some(t => t.id === item.id);
