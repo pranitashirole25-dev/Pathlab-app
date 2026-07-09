@@ -102,7 +102,7 @@ export default function RecordsScreen() {
                   )
                 ) : (
                   <Text style={{color: '#eab308', fontWeight: 'bold', fontSize: 12}}>
-                    {item.status === 'PENDING' ? 'Awaiting Tech' : item.status}
+                    {item.status === 'PENDING' ? 'Awaiting reports' : item.status}
                   </Text>
                 )}
               </View>
