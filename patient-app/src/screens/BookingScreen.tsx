@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Platform } from 'react-native';
 import { User } from 'lucide-react-native';
 import { useCart } from '../context/CartContext';
 
@@ -27,16 +27,44 @@ export default function BookingScreen({ route, navigation }: any) {
     setSelectedPatient(PATIENTS[0]);
   }, []);
 
-  const handleConfirm = () => {
-    // Mock Razorpay / Payment Gateway Redirect
-    // Open actual URL to simulate the payment gateway redirect
-    Linking.openURL('https://razorpay.com/').then(() => {
-      setTimeout(() => {
-        alert(`Payment Simulated! Booking Confirmed for ${bookingItems.length} item(s) at ${selectedSlot}.`);
-        clearCart();
-        navigation.navigate('MainApp', { screen: 'Home' });
-      }, 1000);
-    });
+  const handleConfirm = async () => {
+    const totalAmount = calculateTotal();
+    
+    if (Platform.OS === 'web') {
+      // Load Razorpay Script dynamically for web
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const options = {
+          key: 'rzp_test_dummykey123456', // Replace with real key in production
+          amount: totalAmount * 100, // Paise
+          currency: 'INR',
+          name: "Dr. Shirke's Pathology Lab",
+          description: `Booking for ${bookingItems.length} Test(s)`,
+          image: 'https://www.nidandiagnostics.in/wp-content/uploads/2023/06/lab-removebg-preview.png',
+          handler: function (response: any) {
+            alert(`Payment Successful! Booking Confirmed at ${selectedSlot}.`);
+            clearCart();
+            navigation.navigate('MainApp', { screen: 'Home' });
+          },
+          prefill: {
+            name: selectedPatient?.name || 'Patient Name',
+            contact: '9876543210'
+          },
+          theme: {
+            color: '#272a56'
+          }
+        };
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      };
+      document.body.appendChild(script);
+    } else {
+      // Mobile fallback (simulated)
+      alert(`Payment of ₹${totalAmount} processed successfully!`);
+      clearCart();
+      navigation.navigate('MainApp', { screen: 'Home' });
+    }
   };
 
   const calculateDiscount = () => {
