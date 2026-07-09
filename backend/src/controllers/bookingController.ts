@@ -134,3 +134,57 @@ export const getBookingHistory = async (req: Request, res: Response) => {
   }
 };
 
+export const getStaffAppointments = async (req: Request, res: Response) => {
+  try {
+    const appointments = await query(`
+      SELECT b.id, p.first_name || ' ' || p.last_name AS patient, 
+             a.scheduled_time AS time, 
+             COALESCE(u.address_line || ', ' || u.city, 'Lab Visit') AS location,
+             b.status,
+             array_agg(ct.name) AS tests
+      FROM bookings b
+      JOIN patients p ON b.patient_id = p.id
+      LEFT JOIN user_addresses u ON b.address_id = u.id
+      LEFT JOIN appointments a ON b.id = a.booking_id
+      LEFT JOIN booking_tests bt ON b.id = bt.booking_id
+      LEFT JOIN catalog_tests ct ON bt.test_id = ct.id
+      WHERE b.status IN ('PENDING', 'CONFIRMED', 'IN_PROGRESS')
+      GROUP BY b.id, p.first_name, p.last_name, a.scheduled_time, u.address_line, u.city
+      ORDER BY b.created_at ASC
+    `);
+
+    // Transform into the format the staff PWA expects
+    const formatted = appointments.rows.map(row => ({
+      id: row.id,
+      patient: row.patient,
+      time: row.time ? row.time.substring(0, 5) : 'Anytime',
+      location: row.location,
+      status: row.status,
+      tests: row.tests.filter(Boolean)
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error('Error fetching staff appointments:', err);
+    res.status(500).json({ error: 'Failed to fetch appointments' });
+  }
+};
+
+export const updateBookingStatus = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    await query("UPDATE bookings SET status = $1 WHERE id = $2", [status, id]);
+
+    if (status === 'COMPLETED') {
+      // Set actual arrival time if it hasn't been set
+      await query("UPDATE appointments SET actual_arrival_time = NOW() WHERE booking_id = $1 AND actual_arrival_time IS NULL", [id]);
+    }
+
+    res.json({ message: 'Booking status updated successfully', id, status });
+  } catch (err) {
+    console.error('Error updating booking status:', err);
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+};
