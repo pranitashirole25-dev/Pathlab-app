@@ -6,7 +6,7 @@ export default function TestsScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://pathology-backend.onrender.com/api/catalog/tests')
+    fetch('https://pathology-backend-ipnf.onrender.com/api/catalog/tests')
       .then(res => res.json())
       .then(data => {
         // Since we only loaded packages from the Excel, this might be empty

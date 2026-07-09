@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   useEffect(() => {
-    fetch('https://pathology-backend.onrender.com/api/catalog/tests')
+    fetch('https://pathology-backend-ipnf.onrender.com/api/catalog/tests')
       .then(res => res.json())
       .then(data => {
         // Derive unique categories

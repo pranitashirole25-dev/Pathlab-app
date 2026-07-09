@@ -7,7 +7,7 @@ export default function PackagesScreen({ route, navigation }: any) {
   const categoryFilter = route.params?.category;
 
   useEffect(() => {
-    let url = 'https://pathology-backend.onrender.com/api/catalog/tests';
+    let url = 'https://pathology-backend-ipnf.onrender.com/api/catalog/tests';
     if (categoryFilter) {
       url += `?category=${encodeURIComponent(categoryFilter)}`;
     }
