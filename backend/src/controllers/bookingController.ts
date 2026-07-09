@@ -179,12 +179,33 @@ export const updateBookingStatus = async (req: Request, res: Response) => {
 
     if (status === 'COMPLETED') {
       // Set actual arrival time if it hasn't been set
-      await query("UPDATE appointments SET actual_arrival_time = NOW() WHERE booking_id = $1 AND actual_arrival_time IS NULL", [id]);
+      await query("UPDATE appointments SET status = 'COMPLETED' WHERE booking_id = $1", [id]);
     }
 
-    res.json({ message: 'Booking status updated successfully', id, status });
+    res.json({ message: `Booking updated to ${status}` });
   } catch (err) {
-    console.error('Error updating booking status:', err);
+    console.error('Error updating status:', err);
     res.status(500).json({ error: 'Failed to update status' });
+  }
+};
+
+export const getAdminBookings = async (req: Request, res: Response) => {
+  try {
+    const appointments = await query(`
+      SELECT b.id, p.first_name || ' ' || p.last_name AS patient, 
+             a.scheduled_time AS time, 
+             b.status,
+             r.local_file_path AS report_url
+      FROM bookings b
+      JOIN patients p ON b.patient_id = p.id
+      LEFT JOIN appointments a ON b.id = a.booking_id
+      LEFT JOIN reports r ON b.id = r.booking_id
+      WHERE b.status = 'COMPLETED'
+      ORDER BY b.created_at DESC
+    `);
+    res.json(appointments.rows);
+  } catch (err) {
+    console.error('Error fetching admin bookings:', err);
+    res.status(500).json({ error: 'Failed to fetch admin bookings' });
   }
 };

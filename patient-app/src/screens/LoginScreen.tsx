@@ -1,20 +1,63 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image, ActivityIndicator } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }: any) {
+  const { login, token } = useAuth();
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
+  const [loading, setLoading] = useState(false);
 
-  const handleSendOTP = () => {
-    // Mock API call
-    if (phone.length >= 10) setStep('OTP');
+  useEffect(() => {
+    if (token) {
+      navigation.replace('MainApp');
+    }
+  }, [token]);
+
+  const handleSendOTP = async () => {
+    if (phone.length < 10) return;
+    setLoading(true);
+    try {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: '+91' + phone })
+      });
+      if (res.ok) {
+        setStep('OTP');
+      } else {
+        alert('Failed to send OTP');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyOTP = () => {
-    // Mock API call
-    if (otp.length === 6) {
-      navigation.replace('MainApp');
+  const handleVerifyOTP = async () => {
+    if (otp.length < 6) return;
+    setLoading(true);
+    try {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: '+91' + phone, otp })
+      });
+      const data = await res.json();
+      if (res.ok && data.token) {
+        await login(data.token, data.user);
+        // Navigation to MainApp is handled by useEffect when token changes
+      } else {
+        alert(data.error || 'Invalid OTP');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +94,9 @@ export default function LoginScreen({ navigation }: any) {
               <TouchableOpacity 
                 style={[styles.button, phone.length < 10 && styles.buttonDisabled]} 
                 onPress={handleSendOTP}
-                disabled={phone.length < 10}
+                disabled={phone.length < 10 || loading}
               >
-                <Text style={styles.buttonText}>Send OTP via WhatsApp</Text>
+                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Send OTP via WhatsApp</Text>}
               </TouchableOpacity>
             </>
           ) : (
@@ -75,9 +118,9 @@ export default function LoginScreen({ navigation }: any) {
               <TouchableOpacity 
                 style={[styles.button, otp.length < 6 && styles.buttonDisabled]} 
                 onPress={handleVerifyOTP}
-                disabled={otp.length < 6}
+                disabled={otp.length < 6 || loading}
               >
-                <Text style={styles.buttonText}>Verify & Login</Text>
+                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Verify & Login</Text>}
               </TouchableOpacity>
               
               <TouchableOpacity onPress={() => setStep('PHONE')} style={{ marginTop: 20 }}>

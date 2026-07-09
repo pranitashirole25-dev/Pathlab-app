@@ -29,7 +29,7 @@ const mockLeaves = [
 ];
 
 function App() {
-  const [currentView, setCurrentView] = useState<'DASHBOARD' | 'SCORECARDS' | 'LEAVES' | 'CATALOG'>('DASHBOARD');
+  const [currentView, setCurrentView] = useState<'DASHBOARD' | 'SCORECARDS' | 'LEAVES' | 'CATALOG' | 'REPORTS'>('DASHBOARD');
   
   // Catalog State
   const [catalog, setCatalog] = useState<any[]>([]);
@@ -39,11 +39,42 @@ function App() {
   const [isCreating, setIsCreating] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', category: '', type: 'TEST', price: '', description: '' });
 
+  // Reports State
+  const [reports, setReports] = useState<any[]>([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+
   useEffect(() => {
-    if (currentView === 'CATALOG') {
-      fetchCatalog();
-    }
+    if (currentView === 'CATALOG') fetchCatalog();
+    if (currentView === 'REPORTS') fetchReports();
   }, [currentView]);
+
+  const fetchReports = async () => {
+    setLoadingReports(true);
+    try {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/bookings/admin/completed');
+      const data = await res.json();
+      setReports(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const handleUploadReport = async (bookingId: string) => {
+    const dummyPdf = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+    try {
+      await fetch(`https://pathology-backend-ipnf.onrender.com/api/reports/${bookingId}/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pdfUrl: dummyPdf })
+      });
+      fetchReports();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to upload mock report');
+    }
+  };
 
   const fetchCatalog = () => {
     setLoadingCatalog(true);
@@ -133,6 +164,13 @@ function App() {
             <List className="w-5 h-5 mr-3" />
             Tests & Packages
           </button>
+          <button 
+            onClick={() => setCurrentView('REPORTS')}
+            className={`w-full flex items-center px-4 py-3 rounded-xl font-medium transition-colors ${currentView === 'REPORTS' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'}`}
+          >
+            <FileText className="w-5 h-5 mr-3" />
+            Report Uploads
+          </button>
         </nav>
         
         <div className="p-4 border-t border-glassBorder">
@@ -157,6 +195,7 @@ function App() {
               {currentView === 'SCORECARDS' && 'Staff Scorecards'}
               {currentView === 'LEAVES' && 'Leave Management'}
               {currentView === 'CATALOG' && 'Tests & Packages Config'}
+              {currentView === 'REPORTS' && 'Report Uploads'}
             </h2>
             <p className="text-sm text-slate-400">October 26, 2023 | 09:42 AM</p>
           </div>
@@ -446,6 +485,69 @@ function App() {
                         </td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* REPORTS VIEW */}
+          {currentView === 'REPORTS' && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-100">Report Uploads</h1>
+                  <p className="text-slate-400">Manage patient reports for completed bookings</p>
+                </div>
+              </div>
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-800/50 text-slate-400 text-sm">
+                    <tr>
+                      <th className="px-6 py-4 font-medium">Booking ID</th>
+                      <th className="px-6 py-4 font-medium">Patient</th>
+                      <th className="px-6 py-4 font-medium">Status</th>
+                      <th className="px-6 py-4 font-medium text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/50">
+                    {loadingReports ? (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-slate-400">Loading...</td></tr>
+                    ) : reports.length === 0 ? (
+                      <tr><td colSpan={4} className="px-6 py-8 text-center text-slate-400">No completed bookings found.</td></tr>
+                    ) : (
+                      reports.map(r => (
+                        <tr key={r.id} className="hover:bg-slate-800/20 transition-colors">
+                          <td className="px-6 py-4 font-mono text-sm">#{r.id}</td>
+                          <td className="px-6 py-4 text-slate-200">{r.patient}</td>
+                          <td className="px-6 py-4">
+                            {r.report_url ? (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
+                                Uploaded
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                Pending
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            {r.report_url ? (
+                              <a href={r.report_url} target="_blank" rel="noreferrer" className="text-primary hover:text-primary-light text-sm font-medium">
+                                View Report
+                              </a>
+                            ) : (
+                              <button 
+                                onClick={() => handleUploadReport(r.id)}
+                                className="bg-primary hover:bg-primary-light text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                              >
+                                Mock Upload
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

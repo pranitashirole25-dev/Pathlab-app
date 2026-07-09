@@ -25,6 +25,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6a2b5e92-e13e-4115-88a3-8ce10e2aec59"
+      }
+    },
+    "owner": "nds.pathology",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6a2b5e92-e13e-4115-88a3-8ce10e2aec59"
     }
   }
 }

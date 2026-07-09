@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Platform, Modal, ActivityIndicator } from 'react-native';
 import { User } from 'lucide-react-native';
+import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
 export default function BookingScreen({ route, navigation }: any) {
   const { testName, price, tests } = route.params;
   const { clearCart } = useCart();
+  const { user, patients } = useAuth();
   
   // Normalize tests: either an array from TestsScreen or a single test from PackagesScreen
   const bookingItems = tests || [{ name: testName, price: price }];
@@ -19,15 +21,11 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const SLOTS = ['07:00 AM', '08:00 AM', '09:00 AM', '10:00 AM', '04:00 PM', '05:00 PM'];
   
-  // Mock patients for demo
-  const PATIENTS = [
-    { id: '1', name: 'John Doe', age: 34 },
-    { id: '2', name: 'Robert Doe', age: 65 } // Senior Citizen
-  ];
-
   useEffect(() => {
-    setSelectedPatient(PATIENTS[0]);
-  }, []);
+    if (patients && patients.length > 0) {
+      setSelectedPatient(patients[0]);
+    }
+  }, [patients]);
 
   const handleConfirm = async () => {
     // Show our robust mock payment gateway modal instead of throwing an API error
@@ -43,8 +41,8 @@ export default function BookingScreen({ route, navigation }: any) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: 1, // Mocked user ID from init script
-          patientId: 1, // Mocked patient ID from init script
+          userId: user?.id,
+          patientId: selectedPatient?.id,
           testIds: bookingItems.map((item: any) => item.id),
           collectionType: collectionType,
           addressId: collectionType === 'HOME' ? 1 : null
@@ -71,8 +69,16 @@ export default function BookingScreen({ route, navigation }: any) {
   };
 
   const calculateDiscount = () => {
-    if (selectedPatient?.age >= 60) {
-      return subtotal * 0.15; // 15% discount
+    if (!selectedPatient) return 0;
+    
+    // Calculate age from DOB if available
+    let age = 30;
+    if (selectedPatient.dob) {
+      age = Math.abs(new Date(Date.now() - new Date(selectedPatient.dob).getTime()).getUTCFullYear() - 1970);
+    }
+
+    if (age >= 60) {
+      return subtotal * 0.15; // 15% discount for Senior Citizens
     }
     return 0;
   };
@@ -141,21 +147,27 @@ export default function BookingScreen({ route, navigation }: any) {
 
         <Text style={styles.sectionTitle}>Who is this booking for?</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.patientsContainer}>
-          {PATIENTS.map(patient => (
-            <TouchableOpacity 
-              key={patient.id} 
-              style={[styles.patientCard, selectedPatient?.id === patient.id && styles.patientCardActive]}
-              onPress={() => setSelectedPatient(patient)}
-            >
-              <User color={selectedPatient?.id === patient.id ? '#fff' : '#64748b'} size={20} />
-              <Text style={[styles.patientNameText, selectedPatient?.id === patient.id && styles.patientNameTextActive]}>
-                {patient.name}
-              </Text>
-              <Text style={[styles.patientAgeText, selectedPatient?.id === patient.id && styles.patientNameTextActive]}>
-                {patient.age} yrs {patient.age >= 60 ? '(Senior)' : ''}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {patients.map((patient: any) => {
+            let age = patient.dob ? Math.abs(new Date(Date.now() - new Date(patient.dob).getTime()).getUTCFullYear() - 1970) : 0;
+            return (
+              <TouchableOpacity 
+                key={patient.id} 
+                style={[styles.patientCard, selectedPatient?.id === patient.id && styles.patientCardActive]}
+                onPress={() => setSelectedPatient(patient)}
+              >
+                <User color={selectedPatient?.id === patient.id ? '#fff' : '#64748b'} size={20} />
+                <Text style={[styles.patientNameText, selectedPatient?.id === patient.id && styles.patientNameTextActive]}>
+                  {patient.first_name} {patient.last_name}
+                </Text>
+                <Text style={[styles.patientAgeText, selectedPatient?.id === patient.id && styles.patientNameTextActive]}>
+                  {age} yrs {age >= 60 ? '(Senior)' : ''}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+          {patients.length === 0 && (
+            <Text style={{color: '#94a3b8', fontStyle: 'italic', padding: 20}}>Please add a family member in your Profile tab first.</Text>
+          )}
         </ScrollView>
 
         <Text style={styles.sectionTitle}>Collection Type</Text>

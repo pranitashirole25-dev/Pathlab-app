@@ -1,38 +1,74 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { UserPlus, User } from 'lucide-react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { UserPlus, User, LogOut } from 'lucide-react-native';
+import { useAuth } from '../context/AuthContext';
 
-export default function ProfileScreen() {
-  const [patients, setPatients] = useState([
-    { id: '1', name: 'Amit Kumar', dob: '1990-05-15', gender: 'Male' }
-  ]);
-
+export default function ProfileScreen({ navigation }: any) {
+  const { user, patients, logout, refreshProfiles } = useAuth();
+  
   const [isAdding, setIsAdding] = useState(false);
-  const [newPatient, setNewPatient] = useState({ firstName: '', lastName: '', dob: '', gender: '' });
+  const [newPatient, setNewPatient] = useState({ firstName: '', lastName: '', dob: '', gender: 'Male' });
+  const [loading, setLoading] = useState(false);
 
-  const handleAdd = () => {
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
+
+  const handleAdd = async () => {
     if (!newPatient.firstName || !newPatient.dob || !newPatient.gender) {
-      alert("Please fill all fields");
+      Alert.alert("Error", "Please fill all fields");
       return;
     }
-    setPatients([...patients, { id: Date.now().toString(), name: `${newPatient.firstName} ${newPatient.lastName}`, dob: newPatient.dob, gender: newPatient.gender }]);
-    setIsAdding(false);
-    setNewPatient({ firstName: '', lastName: '', dob: '', gender: '' });
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`https://pathology-backend-ipnf.onrender.com/api/users/${user?.id}/patients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          first_name: newPatient.firstName, 
+          last_name: newPatient.lastName, 
+          dob: newPatient.dob, 
+          gender: newPatient.gender 
+        })
+      });
+      
+      if (res.ok) {
+        setIsAdding(false);
+        setNewPatient({ firstName: '', lastName: '', dob: '', gender: 'Male' });
+        await refreshProfiles();
+      } else {
+        Alert.alert('Error', 'Failed to add family member');
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Error', 'Network error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Family Members</Text>
+        <Text style={styles.title}>My Profile</Text>
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+          <LogOut color="#f43f5e" size={20} />
+        </TouchableOpacity>
       </View>
       
       <View style={styles.content}>
-        {patients.map(p => (
+        {patients.length === 0 && !isAdding && (
+          <Text style={styles.emptyText}>No family members added yet. Add one to book a test.</Text>
+        )}
+
+        {patients.map((p: any) => (
           <View key={p.id} style={styles.card}>
             <View style={styles.avatar}><User color="#fff" size={24} /></View>
             <View>
-              <Text style={styles.name}>{p.name}</Text>
-              <Text style={styles.details}>DOB: {p.dob} • {p.gender}</Text>
+              <Text style={styles.name}>{p.first_name} {p.last_name}</Text>
+              <Text style={styles.details}>DOB: {p.dob ? new Date(p.dob).toLocaleDateString() : 'N/A'} • {p.gender}</Text>
             </View>
           </View>
         ))}
@@ -42,7 +78,7 @@ export default function ProfileScreen() {
             <Text style={styles.formTitle}>Add Family Member</Text>
             <TextInput style={styles.input} placeholder="First Name" value={newPatient.firstName} onChangeText={t => setNewPatient({...newPatient, firstName: t})} />
             <TextInput style={styles.input} placeholder="Last Name" value={newPatient.lastName} onChangeText={t => setNewPatient({...newPatient, lastName: t})} />
-            <TextInput style={styles.input} placeholder="Date of Birth (YYYY-MM-DD)" value={newPatient.dob} onChangeText={t => setNewPatient({...newPatient, dob: t})} keyboardType="numeric" maxLength={10} />
+            <TextInput style={styles.input} placeholder="Date of Birth (YYYY-MM-DD)" value={newPatient.dob} onChangeText={t => setNewPatient({...newPatient, dob: t})} />
             
             <Text style={{marginBottom: 8, fontWeight: '600', color: '#64748b'}}>Gender</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16}}>
@@ -61,8 +97,8 @@ export default function ProfileScreen() {
               <TouchableOpacity style={styles.cancelBtn} onPress={() => setIsAdding(false)}>
                 <Text style={styles.cancelBtnText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveBtn} onPress={handleAdd}>
-                <Text style={styles.saveBtnText}>Save Member</Text>
+              <TouchableOpacity style={styles.saveBtn} onPress={handleAdd} disabled={loading}>
+                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.saveBtnText}>Save Member</Text>}
               </TouchableOpacity>
             </View>
           </View>
@@ -79,8 +115,9 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8fafc' },
-  header: { backgroundColor: '#fff', paddingTop: 60, paddingBottom: 20, paddingHorizontal: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', paddingTop: 60, paddingBottom: 20, paddingHorizontal: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#0f172a' },
+  logoutBtn: { padding: 8, backgroundColor: '#fff1f2', borderRadius: 8 },
   content: { padding: 16 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#272a56', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
@@ -98,6 +135,7 @@ const styles = StyleSheet.create({
   actionRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
   cancelBtn: { flex: 1, padding: 16, borderRadius: 8, alignItems: 'center', marginRight: 8, backgroundColor: '#f1f5f9' },
   cancelBtnText: { color: '#64748b', fontWeight: 'bold' },
-  saveBtn: { flex: 1, backgroundColor: '#272a56', padding: 16, borderRadius: 8, alignItems: 'center', marginLeft: 8 },
-  saveBtnText: { color: '#fff', fontWeight: 'bold' }
+  saveBtn: { flex: 1, padding: 16, borderRadius: 8, alignItems: 'center', backgroundColor: '#272a56' },
+  saveBtnText: { color: '#fff', fontWeight: 'bold' },
+  emptyText: { color: '#94a3b8', fontStyle: 'italic', marginBottom: 16, textAlign: 'center' },
 });
