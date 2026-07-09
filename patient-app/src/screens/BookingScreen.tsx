@@ -39,9 +39,12 @@ export default function BookingScreen({ route, navigation }: any) {
     setTimeout(() => {
       setProcessing(false);
       setPaymentModalVisible(false);
-      alert(`Payment Successful! Booking Confirmed at ${selectedSlot}.`);
       clearCart();
-      navigation.navigate('MainApp', { screen: 'Home' });
+      navigation.navigate('Success', { 
+        amount: calculateTotal(), 
+        slot: selectedSlot, 
+        itemsCount: bookingItems.length 
+      });
     }, 2000);
   };
 
