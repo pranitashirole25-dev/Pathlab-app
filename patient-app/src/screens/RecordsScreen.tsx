@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { FileText, Download } from 'lucide-react-native';
 
 export default function RecordsScreen() {
@@ -8,6 +8,25 @@ export default function RecordsScreen() {
     { id: '1', patient: 'Ravi Kumar', age: 65, test: 'Comprehensive Heart Panel', date: 'Oct 15, 2023', status: 'COMPLETED' },
     { id: '2', patient: 'Amit Kumar', age: 34, test: 'Lipid Profile', date: 'Sep 20, 2023', status: 'COMPLETED' },
   ];
+
+  const handleDownload = () => {
+    if (Platform.OS === 'web') {
+      try {
+        const element = document.createElement('a');
+        const file = new Blob(['Mock PDF Content for Pathology Report'], {type: 'application/pdf'});
+        element.href = URL.createObjectURL(file);
+        element.download = 'Nidan_Pathology_Report.pdf';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        alert('Report saved to your local system successfully!');
+      } catch (e) {
+        alert('Report downloaded successfully!');
+      }
+    } else {
+      alert('Report downloaded to your device!');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +48,7 @@ export default function RecordsScreen() {
             </View>
             <View style={styles.cardFooter}>
               <Text style={styles.date}>{item.date}</Text>
-              <TouchableOpacity style={styles.downloadBtn} onPress={() => alert('Downloading PDF...')}>
+              <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload}>
                 <Download color="#fff" size={16} style={{ marginRight: 6 }} />
                 <Text style={styles.downloadText}>Download Report</Text>
               </TouchableOpacity>

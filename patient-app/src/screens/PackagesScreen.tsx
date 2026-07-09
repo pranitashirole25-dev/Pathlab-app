@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
 
 export default function PackagesScreen({ route, navigation }: any) {
   const [packages, setPackages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const categoryFilter = route.params?.category;
 
   useEffect(() => {
@@ -52,8 +53,18 @@ export default function PackagesScreen({ route, navigation }: any) {
     </View>
   );
 
+  const filteredPackages = packages.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
   return (
     <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <TextInput 
+          style={styles.searchInput} 
+          placeholder="Search packages by name..." 
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
       {categoryFilter && (
         <View style={styles.filterHeader}>
           <Text style={styles.filterText}>Showing packages for: {categoryFilter}</Text>
@@ -63,7 +74,7 @@ export default function PackagesScreen({ route, navigation }: any) {
         </View>
       )}
       <FlatList
-        data={packages}
+        data={filteredPackages}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
@@ -76,6 +87,8 @@ export default function PackagesScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f8fafc' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8fafc' },
+  searchContainer: { padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
+  searchInput: { backgroundColor: '#f8fafc', padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#e2e8f0', fontSize: 16 },
   filterHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

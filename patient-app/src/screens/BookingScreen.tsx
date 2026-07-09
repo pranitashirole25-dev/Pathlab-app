@@ -3,7 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Ale
 import { User } from 'lucide-react-native';
 
 export default function BookingScreen({ route, navigation }: any) {
-  const { testName, price } = route.params;
+  const { testName, price, tests } = route.params;
+  
+  // Normalize tests: either an array from TestsScreen or a single test from PackagesScreen
+  const bookingItems = tests || [{ name: testName, price: price }];
+  const subtotal = bookingItems.reduce((sum: number, item: any) => sum + (item.price || 0), 0);
+
   const [collectionType, setCollectionType] = useState<'HOME' | 'LAB'>('HOME');
   const [selectedSlot, setSelectedSlot] = useState('');
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
@@ -21,15 +26,17 @@ export default function BookingScreen({ route, navigation }: any) {
   }, []);
 
   const handleConfirm = () => {
-    // In real app, integrate Razorpay/Stripe here
+    // Mock Razorpay / Payment Gateway Redirect
     Alert.alert(
-      "Confirm Booking",
-      `Booking for ${selectedPatient?.name}\nTotal: ₹${calculateTotal()}\n\nNote: ₹100 Home Visit fee is non-refundable if cancelled less than 30 mins before the scheduled time.`,
+      "Redirecting to Payment Gateway",
+      `You will be redirected to Razorpay to pay ₹${calculateTotal()}.`,
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: () => {
-          alert(`Booking Confirmed for ${testName} at ${selectedSlot}!`);
-          navigation.navigate('MainApp', { screen: 'Home' });
+        { text: "Proceed", onPress: () => {
+          setTimeout(() => {
+            alert(`Payment Successful! Booking Confirmed for ${bookingItems.length} item(s) at ${selectedSlot}.`);
+            navigation.navigate('MainApp', { screen: 'Home' });
+          }, 1000);
         }}
       ]
     );
@@ -37,7 +44,7 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const calculateDiscount = () => {
     if (selectedPatient?.age >= 60) {
-      return price * 0.15; // 15% discount
+      return subtotal * 0.15; // 15% discount
     }
     return 0;
   };
@@ -45,7 +52,7 @@ export default function BookingScreen({ route, navigation }: any) {
   const calculateTotal = () => {
     const discount = calculateDiscount();
     const homeFee = collectionType === 'HOME' ? 100 : 0;
-    return price - discount + homeFee;
+    return subtotal - discount + homeFee;
   };
 
   return (
@@ -60,8 +67,18 @@ export default function BookingScreen({ route, navigation }: any) {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.testSummaryCard}>
-          <Text style={styles.testName}>{testName}</Text>
-          <Text style={styles.testPrice}>₹{price}</Text>
+          <Text style={styles.sectionTitle}>Selected Tests</Text>
+          {bookingItems.map((item: any, idx: number) => (
+            <View key={idx} style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8}}>
+              <Text style={styles.testName}>{item.name}</Text>
+              <Text style={styles.testPrice}>₹{item.price}</Text>
+            </View>
+          ))}
+          <View style={{height: 1, backgroundColor: '#e2e8f0', marginVertical: 8}} />
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{fontWeight: 'bold', color: '#0f172a'}}>Subtotal</Text>
+            <Text style={{fontWeight: 'bold', color: '#0f172a'}}>₹{subtotal}</Text>
+          </View>
         </View>
 
         <Text style={styles.sectionTitle}>Who is this booking for?</Text>
@@ -122,8 +139,8 @@ export default function BookingScreen({ route, navigation }: any) {
         <View style={styles.billSummary}>
           <Text style={styles.billTitle}>Bill Summary</Text>
           <View style={styles.billRow}>
-            <Text style={styles.billLabel}>Test Total</Text>
-            <Text style={styles.billValue}>₹{price}</Text>
+              <Text style={styles.billLabel}>Total Tests ({bookingItems.length})</Text>
+              <Text style={styles.billValue}>₹{subtotal}</Text>
           </View>
           {calculateDiscount() > 0 && (
             <View style={styles.billRow}>
@@ -156,10 +173,10 @@ export default function BookingScreen({ route, navigation }: any) {
         </View>
         <TouchableOpacity 
           style={[styles.confirmBtn, !selectedSlot && styles.confirmBtnDisabled]}
-          disabled={!selectedSlot}
           onPress={handleConfirm}
+          disabled={!selectedSlot}
         >
-          <Text style={styles.confirmBtnText}>Proceed to Pay</Text>
+          <Text style={styles.confirmBtnText}>Proceed to Pay • ₹{calculateTotal()}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

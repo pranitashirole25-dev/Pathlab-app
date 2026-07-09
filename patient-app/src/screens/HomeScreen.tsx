@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image, Modal } from 'react-native';
 import { Sparkles, Bone, Heart, Activity, Droplet, Dna, Users, Thermometer, TestTube, Stethoscope } from 'lucide-react-native';
 
 export default function HomeScreen({ navigation }: any) {
   const [categories, setCategories] = useState<any[]>([]);
   const [popularTests, setPopularTests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const getCategoryIcon = (name: string, size = 28) => {
     const lower = name.toLowerCase();
@@ -77,10 +78,29 @@ export default function HomeScreen({ navigation }: any) {
           />
           <Text style={styles.greeting}>Dr. Shirke's Pathology Lab</Text>
         </View>
-        <TouchableOpacity style={styles.profileBtn}>
+        <TouchableOpacity style={styles.profileBtn} onPress={() => setMenuVisible(true)}>
           <Text style={styles.profileInitials}>J</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal visible={menuVisible} transparent animationType="fade">
+        <TouchableOpacity style={styles.modalOverlay} onPress={() => setMenuVisible(false)}>
+          <View style={styles.menuBox}>
+            <Text style={styles.menuName}>John Doe</Text>
+            <Text style={styles.menuPhone}>+91 9876543210</Text>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={() => { setMenuVisible(false); navigation.navigate('Records'); }}>
+              <Text style={styles.menuItemText}>View Past History</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => { setMenuVisible(false); navigation.navigate('Profile'); }}>
+              <Text style={styles.menuItemText}>Manage Family Members</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => { setMenuVisible(false); navigation.navigate('Login'); }}>
+              <Text style={[styles.menuItemText, { color: '#f0222c' }]}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
 
       <View style={styles.searchBox}>
         <Text style={styles.searchPlaceholder}>🔍 Search for tests, packages...</Text>
@@ -331,5 +351,47 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: '600',
     fontSize: 14,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  menuBox: {
+    backgroundColor: '#fff',
+    marginTop: 80,
+    marginRight: 20,
+    padding: 16,
+    borderRadius: 12,
+    width: 220,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  menuName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0f172a',
+  },
+  menuPhone: {
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 8,
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#f1f5f9',
+    marginVertical: 8,
+  },
+  menuItem: {
+    paddingVertical: 10,
+  },
+  menuItemText: {
+    fontSize: 14,
+    color: '#334155',
+    fontWeight: '500',
   }
 });
