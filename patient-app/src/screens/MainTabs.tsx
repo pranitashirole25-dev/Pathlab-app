@@ -22,7 +22,7 @@ export default function MainTabs() {
           if (route.name === 'Records') return <Clock color={color} size={size} />;
           if (route.name === 'Profile') return <User color={color} size={size} />;
         },
-        tabBarActiveTintColor: '#0ea5e9',
+        tabBarActiveTintColor: '#272a56',
         tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: {
           backgroundColor: '#0f172a',

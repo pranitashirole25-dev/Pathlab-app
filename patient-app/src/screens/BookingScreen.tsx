@@ -239,15 +239,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
     minWidth: 120,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
   patientCardActive: {
-    borderColor: '#0ea5e9',
-    backgroundColor: '#0ea5e9',
+    borderColor: '#272a56',
+    backgroundColor: '#272a56',
   },
   patientNameText: {
     fontSize: 14,
@@ -276,14 +276,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
   typeCardActive: {
-    borderColor: '#0ea5e9',
+    borderColor: '#272a56',
     backgroundColor: '#f0f9ff',
   },
   typeIcon: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     color: '#64748b',
   },
   typeTextActive: {
-    color: '#0ea5e9',
+    color: '#272a56',
   },
   activeDot: {
     position: 'absolute',
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#0ea5e9',
+    backgroundColor: '#272a56',
   },
   dateSubtitle: {
     fontSize: 14,
@@ -331,8 +331,8 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
   },
   slotCardActive: {
-    backgroundColor: '#0ea5e9',
-    borderColor: '#0ea5e9',
+    backgroundColor: '#272a56',
+    borderColor: '#272a56',
   },
   slotText: {
     fontSize: 14,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   billTotalValue: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0ea5e9',
+    color: '#272a56',
   },
   cancellationPolicyText: {
     fontSize: 12,
@@ -415,11 +415,11 @@ const styles = StyleSheet.create({
     color: '#0f172a',
   },
   confirmBtn: {
-    backgroundColor: '#0ea5e9',
+    backgroundColor: '#272a56',
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 14,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

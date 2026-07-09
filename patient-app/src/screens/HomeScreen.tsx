@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import { Sparkles, Bone, Heart, Activity, Droplet, Dna, Users, Thermometer, TestTube, Stethoscope } from 'lucide-react-native';
 
 export default function HomeScreen({ navigation }: any) {
@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }: any) {
     if (lower.includes('kidney') || lower.includes('renal')) return <Activity size={size} color="#3b82f6" />;
     if (lower.includes('thalassemia') || lower.includes('apla')) return <TestTube size={size} color="#14b8a6" />;
     
-    return <Stethoscope size={size} color="#0ea5e9" />; // Default brand blue
+    return <Stethoscope size={size} color="#272a56" />; // Default brand blue
   };
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function HomeScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#272a56" />
       </View>
     );
   }
@@ -69,9 +69,13 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Good Morning, John!</Text>
-          <Text style={styles.location}>📍 Mumbai, Maharashtra</Text>
+        <View style={styles.headerLeft}>
+          <Image 
+            source={require('../../assets/nidan-logo.png')} 
+            style={styles.logo} 
+            resizeMode="contain" 
+          />
+          <Text style={styles.greeting}>Dr. Shirke's Pathology Lab</Text>
         </View>
         <TouchableOpacity style={styles.profileBtn}>
           <Text style={styles.profileInitials}>J</Text>
@@ -151,10 +155,20 @@ const styles = StyleSheet.create({
     paddingTop: 60, // Safe area for iOS notch
     backgroundColor: '#ffffff',
   },
+  headerLeft: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 220,
+    height: 45,
+    marginBottom: 8,
+    marginLeft: -10, // Adjust for image padding
+  },
   greeting: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#0f172a',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#63ad30',
   },
   location: {
     fontSize: 14,
@@ -166,12 +180,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#e0f2fe',
+    backgroundColor: '#f1f5f9',
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileInitials: {
-    color: '#0ea5e9',
+    color: '#272a56',
     fontWeight: '700',
     fontSize: 18,
   },
@@ -181,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: -20,
     padding: 16,
     borderRadius: 16,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
@@ -208,7 +222,7 @@ const styles = StyleSheet.create({
     color: '#0f172a',
   },
   seeAll: {
-    color: '#0ea5e9',
+    color: '#272a56',
     fontWeight: '600',
     fontSize: 14,
   },
@@ -221,7 +235,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 16,
     width: 130,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -255,7 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginTop: 16,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -308,9 +322,9 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   addButton: {
-    backgroundColor: '#0f172a',
-    paddingHorizontal: 20,
+    backgroundColor: '#272a56',
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 12,
   },
   addButtonText: {

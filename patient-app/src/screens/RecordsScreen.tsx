@@ -25,7 +25,7 @@ export default function RecordsScreen() {
                 <Text style={styles.patientName}>{item.patient} (Age {item.age})</Text>
                 <Text style={styles.testName}>{item.test}</Text>
               </View>
-              <FileText color="#0ea5e9" size={24} />
+              <FileText color="#272a56" size={24} />
             </View>
             <View style={styles.cardFooter}>
               <Text style={styles.date}>{item.date}</Text>
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
   testName: { fontSize: 14, color: '#64748b' },
   cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#f1f5f9', paddingTop: 16 },
   date: { fontSize: 12, color: '#94a3b8' },
-  downloadBtn: { backgroundColor: '#0ea5e9', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
+  downloadBtn: { backgroundColor: '#272a56', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
   downloadText: { color: '#fff', fontWeight: 'bold', fontSize: 12 }
 });

@@ -45,7 +45,7 @@ export default function ProfileScreen() {
           </View>
         ) : (
           <TouchableOpacity style={styles.addBtn} onPress={() => setIsAdding(true)}>
-            <UserPlus color="#0ea5e9" size={20} style={{ marginRight: 8 }} />
+            <UserPlus color="#272a56" size={20} style={{ marginRight: 8 }} />
             <Text style={styles.addBtnText}>Add Family Member</Text>
           </TouchableOpacity>
         )}
@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: 'bold', color: '#0f172a' },
   content: { padding: 16 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center' },
-  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#0ea5e9', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
+  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#272a56', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
   name: { fontSize: 16, fontWeight: 'bold', color: '#0f172a', marginBottom: 4 },
   details: { fontSize: 14, color: '#64748b' },
   addBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 16, borderStyle: 'dashed', borderWidth: 2, borderColor: '#cbd5e1', borderRadius: 16, marginTop: 10 },
-  addBtnText: { color: '#0ea5e9', fontWeight: 'bold', fontSize: 16 },
+  addBtnText: { color: '#272a56', fontWeight: 'bold', fontSize: 16 },
   addForm: { backgroundColor: '#fff', borderRadius: 16, padding: 16, marginTop: 10 },
   formTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 16 },
   input: { backgroundColor: '#f8fafc', borderRadius: 8, padding: 12, marginBottom: 12, borderWidth: 1, borderColor: '#e2e8f0' },
-  saveBtn: { backgroundColor: '#0ea5e9', padding: 16, borderRadius: 8, alignItems: 'center' },
+  saveBtn: { backgroundColor: '#272a56', padding: 16, borderRadius: 8, alignItems: 'center' },
   saveBtnText: { color: '#fff', fontWeight: 'bold' }
 });

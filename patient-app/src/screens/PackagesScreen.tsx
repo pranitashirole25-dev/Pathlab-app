@@ -26,7 +26,7 @@ export default function PackagesScreen({ route, navigation }: any) {
   if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0ea5e9" />
+        <ActivityIndicator size="large" color="#272a56" />
       </View>
     );
   }
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#e0f2fe',
+    backgroundColor: '#f1f5f9',
     borderBottomWidth: 1,
     borderBottomColor: '#bae6fd',
   },
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryBadge: {
-    backgroundColor: '#e0f2fe',
+    backgroundColor: '#f1f5f9',
     color: '#0284c7',
     paddingHorizontal: 8,
     paddingVertical: 4,

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   brandName: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#0ea5e9',
+    color: '#272a56',
     letterSpacing: 1,
   },
   subtitle: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 24,
     padding: 24,
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
@@ -173,12 +173,12 @@ const styles = StyleSheet.create({
     letterSpacing: 8,
   },
   button: {
-    backgroundColor: '#0ea5e9',
+    backgroundColor: '#272a56',
     height: 56,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#0ea5e9',
+    shadowColor: '#272a56',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   linkText: {
-    color: '#0ea5e9',
+    color: '#272a56',
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
