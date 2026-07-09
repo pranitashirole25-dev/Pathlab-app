@@ -21,6 +21,21 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const SLOTS = ['07:00 AM', '08:00 AM', '09:00 AM', '10:00 AM', '04:00 PM', '05:00 PM'];
   
+  // Compute tomorrow's date
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowFormatted = tomorrow.toISOString().split('T')[0]; // YYYY-MM-DD
+  const displayDate = tomorrow.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+  const formatTimeForDB = (timeStr: string) => {
+    if (!timeStr) return null;
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    if (hours === '12') hours = '00';
+    if (modifier === 'PM') hours = String(parseInt(hours, 10) + 12);
+    return `${hours}:${minutes}:00`;
+  };
+  
   useEffect(() => {
     if (patients && patients.length > 0) {
       setSelectedPatient(patients[0]);
@@ -45,7 +60,9 @@ export default function BookingScreen({ route, navigation }: any) {
           patientId: selectedPatient?.id,
           testIds: bookingItems.map((item: any) => item.id),
           collectionType: collectionType,
-          addressId: collectionType === 'HOME' ? 1 : null
+          addressId: collectionType === 'HOME' ? 1 : null,
+          scheduledDate: tomorrowFormatted,
+          scheduledTime: formatTimeForDB(selectedSlot)
         })
       });
 
@@ -192,7 +209,7 @@ export default function BookingScreen({ route, navigation }: any) {
         </View>
 
         <Text style={styles.sectionTitle}>Select Time Slot</Text>
-        <Text style={styles.dateSubtitle}>Tomorrow, Oct 27</Text>
+        <Text style={styles.dateSubtitle}>{displayDate}</Text>
         
         <View style={styles.slotsContainer}>
           {SLOTS.map(slot => (

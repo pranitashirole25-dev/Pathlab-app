@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { query } from '../config/db';
 
 export const createBooking = async (req: Request, res: Response) => {
-  const { userId, patientId, testIds, collectionType, addressId } = req.body;
+  const { userId, patientId, testIds, collectionType, addressId, scheduledDate, scheduledTime } = req.body;
 
   try {
     if (!userId || !patientId || !testIds || !collectionType) {
@@ -51,6 +51,14 @@ export const createBooking = async (req: Request, res: Response) => {
         `INSERT INTO booking_tests (booking_id, test_id, price_at_booking) 
          SELECT $1, id, price FROM catalog_tests WHERE id = $2`,
         [bookingId, testId]
+      );
+    }
+
+    // 6. Insert into appointments
+    if (scheduledDate && scheduledTime) {
+      await query(
+        `INSERT INTO appointments (booking_id, scheduled_date, scheduled_time) VALUES ($1, $2, $3)`,
+        [bookingId, scheduledDate, scheduledTime]
       );
     }
 
@@ -154,14 +162,26 @@ export const getStaffAppointments = async (req: Request, res: Response) => {
     `);
 
     // Transform into the format the staff PWA expects
-    const formatted = appointments.rows.map(row => ({
-      id: row.id,
-      patient: row.patient,
-      time: row.time ? row.time.substring(0, 5) : 'Anytime',
-      location: row.location,
-      status: row.status,
-      tests: row.tests.filter(Boolean)
-    }));
+    const formatted = appointments.rows.map(row => {
+      let timeStr = 'Anytime';
+      if (row.time) {
+        let [hours, minutes] = row.time.split(':');
+        let h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12;
+        if (h === 0) h = 12;
+        timeStr = `${h < 10 ? '0'+h : h}:${minutes} ${ampm}`;
+      }
+
+      return {
+        id: row.id,
+        patient: row.patient,
+        time: timeStr,
+        location: row.location,
+        status: row.status,
+        tests: row.tests.filter(Boolean)
+      };
+    });
 
     res.json(formatted);
   } catch (err) {
