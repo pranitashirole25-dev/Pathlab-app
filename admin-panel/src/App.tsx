@@ -33,6 +33,8 @@ function App() {
   
   // Catalog State
   const [catalog, setCatalog] = useState<any[]>([]);
+  const [loadingCatalog, setLoadingCatalog] = useState(false);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
   const [editingTest, setEditingTest] = useState<any>(null);
   const [editForm, setEditForm] = useState({ price: '', description: '' });
 
@@ -43,10 +45,22 @@ function App() {
   }, [currentView]);
 
   const fetchCatalog = () => {
+    setLoadingCatalog(true);
+    setCatalogError(null);
     fetch('https://pathology-backend-ipnf.onrender.com/api/catalog/tests')
-      .then(res => res.json())
-      .then(data => setCatalog(data))
-      .catch(console.error);
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch from server');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCatalog(data);
+        } else {
+          setCatalogError('Invalid data format received');
+        }
+      })
+      .catch(err => setCatalogError(err.message))
+      .finally(() => setLoadingCatalog(false));
   };
 
   const handleEditClick = (test: any) => {
@@ -373,7 +387,29 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {catalog.map(test => (
+                    {loadingCatalog && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
+                          <Activity className="w-6 h-6 animate-spin mx-auto mb-2 text-primary" />
+                          Loading tests from database...
+                        </td>
+                      </tr>
+                    )}
+                    {catalogError && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center text-danger font-medium">
+                          Error: {catalogError}
+                        </td>
+                      </tr>
+                    )}
+                    {!loadingCatalog && !catalogError && catalog.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
+                          No tests or packages found.
+                        </td>
+                      </tr>
+                    )}
+                    {!loadingCatalog && catalog.map(test => (
                       <tr key={test.id} className="border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
                         <td className="px-6 py-4 font-medium text-white">{test.name}</td>
                         <td className="px-6 py-4">
