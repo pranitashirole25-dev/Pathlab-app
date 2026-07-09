@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { query } from '../config/db';
-import WhatsAppService from '../services/whatsappService';
+import MSG91Service from '../services/msg91Service';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
@@ -20,10 +20,11 @@ export const requestOTP = async (req: Request, res: Response) => {
     otpStore.set(phone, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
 
     try {
-      // Send via WhatsApp if configured
-      await WhatsAppService.sendOTP(phone, otp);
-    } catch (waErr) {
-      console.log(`[DEMO MODE] WhatsApp failed or not configured. OTP for ${phone} is ${otp}`);
+      // Send via MSG91
+      await MSG91Service.sendOTP(phone, otp);
+      console.log(`[AUTH] Sent OTP ${otp} to ${phone}`);
+    } catch (msgErr) {
+      console.log(`[DEMO MODE] MSG91 failed or not configured. OTP for ${phone} is ${otp}`);
       // Don't throw, just fall through for demo
     }
 
