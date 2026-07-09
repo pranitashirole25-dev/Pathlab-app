@@ -37,3 +37,21 @@ export const updateTest = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to update catalog test' });
   }
 };
+
+export const createTest = async (req: Request, res: Response) => {
+  const { name, category, price, description, type } = req.body;
+
+  try {
+    const result = await query(
+      `INSERT INTO catalog_tests (name, category, price, description, type, is_active)
+       VALUES ($1, $2, $3, $4, $5, true)
+       RETURNING *`,
+      [name, category, price, description, type || 'TEST']
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error creating test:', err);
+    res.status(500).json({ error: 'Failed to create new catalog item' });
+  }
+};

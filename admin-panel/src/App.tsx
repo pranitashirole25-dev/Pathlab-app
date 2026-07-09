@@ -36,7 +36,8 @@ function App() {
   const [loadingCatalog, setLoadingCatalog] = useState(false);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [editingTest, setEditingTest] = useState<any>(null);
-  const [editForm, setEditForm] = useState({ price: '', description: '' });
+  const [isCreating, setIsCreating] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', category: '', type: 'TEST', price: '', description: '' });
 
   useEffect(() => {
     if (currentView === 'CATALOG') {
@@ -65,20 +66,28 @@ function App() {
 
   const handleEditClick = (test: any) => {
     setEditingTest(test);
-    setEditForm({ price: test.price, description: test.description });
+    setEditForm({ name: test.name, category: test.category, type: test.type, price: test.price, description: test.description });
   };
 
-  const handleUpdateTest = async () => {
+  const handleAddNewClick = () => {
+    setIsCreating(true);
+    setEditForm({ name: '', category: '', type: 'TEST', price: '', description: '' });
+  };
+
+  const handleSaveTest = async () => {
     try {
-      await fetch(`https://pathology-backend-ipnf.onrender.com/api/catalog/tests/${editingTest.id}`, {
-        method: 'PUT',
+      const url = isCreating 
+        ? 'https://pathology-backend-ipnf.onrender.com/api/catalog/tests'
+        : `https://pathology-backend-ipnf.onrender.com/api/catalog/tests/${editingTest.id}`;
+        
+      await fetch(url, {
+        method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          price: editForm.price,
-          description: editForm.description
-        })
+        body: JSON.stringify(editForm)
       });
+      
       setEditingTest(null);
+      setIsCreating(false);
       fetchCatalog(); // Refresh list
     } catch (err) {
       console.error(err);
@@ -374,7 +383,15 @@ function App() {
 
           {currentView === 'CATALOG' && (
             <div className="glass-card">
-              <h3 className="text-xl font-semibold text-white mb-6">Tests & Packages Configuration</h3>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-white">Tests & Packages Configuration</h3>
+                <button 
+                  onClick={handleAddNewClick}
+                  className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-primary/30 text-sm"
+                >
+                  + Add New Item
+                </button>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm text-slate-300">
                   <thead className="bg-slate-800/50 text-slate-400">
@@ -438,13 +455,52 @@ function App() {
         </div>
       </main>
 
-      {/* Edit Modal */}
-      {editingTest && (
+      {/* Edit/Create Modal */}
+      {(editingTest || isCreating) && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-darkBg border border-glassBorder rounded-2xl w-[500px] p-6 shadow-2xl">
-            <h3 className="text-xl font-bold text-white mb-6">Edit {editingTest.name}</h3>
+          <div className="bg-darkBg border border-glassBorder rounded-2xl w-[500px] p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-white mb-6">
+              {isCreating ? 'Add New Test/Package' : `Edit ${editingTest?.name}`}
+            </h3>
             
             <div className="space-y-4">
+              {isCreating && (
+                <>
+                  <div>
+                    <label className="block text-sm text-slate-400 mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      value={editForm.name}
+                      onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                      className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div className="flex space-x-4">
+                    <div className="flex-1">
+                      <label className="block text-sm text-slate-400 mb-1">Type</label>
+                      <select 
+                        value={editForm.type}
+                        onChange={(e) => setEditForm({...editForm, type: e.target.value})}
+                        className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
+                      >
+                        <option value="TEST">Individual Test</option>
+                        <option value="PACKAGE">Package</option>
+                      </select>
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm text-slate-400 mb-1">Category</label>
+                      <input 
+                        type="text" 
+                        value={editForm.category}
+                        onChange={(e) => setEditForm({...editForm, category: e.target.value})}
+                        className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
+                        placeholder="e.g. Blood Panel"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              
               <div>
                 <label className="block text-sm text-slate-400 mb-1">Price (₹)</label>
                 <input 
@@ -466,16 +522,16 @@ function App() {
 
             <div className="flex justify-end space-x-3 mt-8">
               <button 
-                onClick={() => setEditingTest(null)}
+                onClick={() => { setEditingTest(null); setIsCreating(false); }}
                 className="px-4 py-2 rounded-lg text-slate-400 hover:text-white transition-colors font-medium"
               >
                 Cancel
               </button>
               <button 
-                onClick={handleUpdateTest}
+                onClick={handleSaveTest}
                 className="px-6 py-2 bg-primary text-white rounded-lg font-medium shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors"
               >
-                Save Changes
+                {isCreating ? 'Create Item' : 'Save Changes'}
               </button>
             </div>
           </div>
