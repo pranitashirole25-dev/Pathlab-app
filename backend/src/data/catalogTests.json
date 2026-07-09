@@ -1,0 +1,479 @@
+[
+  {
+    "id": 1,
+    "name": "FULL BODY CHECKUP Mini",
+    "description": "CBC, FBS, KFT (3 param), LFT, LIPID PROFILE, URINE R/M",
+    "price": 699,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "name": "FULL BODY CHECKUP Mini Plus",
+    "description": "CBC, FBS, KFT (6 param), LFT, LIPID PROFILE, UTSH, URINE R/M",
+    "price": 849,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 3,
+    "name": "FULL BODY CHECKUP BASIC",
+    "description": "CBC, ESR, FBS, HbA1c, KFT (6 param), LFT, LIPID PROFILE, CALCIUM, UTSH, URINE R/M",
+    "price": 1399,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "name": "FULL BODY CHECKUP Basic Plus",
+    "description": "CBC, ESR, FBS, HbA1c, KFT (6 param), LFT, LIPID PROFILE, CALCIUM, TFT, VIT B12, Vit D(25 hydroxy), URINE R/M",
+    "price": 1999,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "name": "FULL BODY CHECKUP ADVANCED",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, LDH, TFT, VIT B12, VIT B9, Vit D(25 hydroxy), Homocysteine, URINE R/M",
+    "price": 2599,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 6,
+    "name": "FULL BODY CHECKUP ADVANCED Plus",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, Amylase, LDH, Lipase, UTSH, FT3 & FT4, VIT B12, VIT B9, Vit D(25 hydroxy), Homocysteine, Ferretin, IRON STUDY, TOTAL IgE, Microalbumin Createnine Ratio, EGFR, URINE R/M",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 7,
+    "name": "FULL BODY CHECKUP ADVANCED Plus With CA Markers Male",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, Amylase, LDH, Lipase, UTSH, FT3 & FT4, VIT B12, VIT B9, Vit D(25 hydroxy), Homocysteine, Ferretin, IRON STUDY, TOTAL IgE, CEA, PSA, Microalbumin Createnine Ratio, EGFR, URINE R/M",
+    "price": 4499,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 8,
+    "name": "FULL BODY CHECKUP ADVANCED Plus With CA Markers Female",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, Amylase, LDH, Lipase, UTSH, FT3 & FT4, VIT B12, VIT B9, Vit D(25 hydroxy), Homocysteine, Ferretin, IRON STUDY, TOTAL IgE, CEA, CA 125, CA 15.3, Microalbumin Createnine Ratio, EGFR, URINE R/M",
+    "price": 4999,
+    "type": "PACKAGE",
+    "category": "Full Body Checkup",
+    "is_active": true
+  },
+  {
+    "id": 9,
+    "name": "SENIOR CITIZEN PACKAGE",
+    "description": "CBC, ESR, FBS, HbA1c, KFT (6 param), LFT, LIPID PROFILE, CALCIUM, TFT, Vit D(25 hydroxy), IRON STUDY, RH Factor - Quantitative, Microalbumin Createnine Ratio, URINE R/M",
+    "price": 2599,
+    "type": "PACKAGE",
+    "category": "SENIOR CITIZEN",
+    "is_active": true
+  },
+  {
+    "id": 10,
+    "name": "SENIOR CITIZEN MALE",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, FREE THYROID PROFILE, VIT B12, VIT B9, Vit D(25 hydroxy), IRON STUDY, Amylase, Lipase, CEA, PSA, ANTI CCP, RH Factor - Quantitative, TOTAL IgE, TESTOSTERONE, TOTAL, EGFR, Microalbumin Createnine Ratio, URINE R/M",
+    "price": 4499,
+    "type": "PACKAGE",
+    "category": "SENIOR CITIZEN",
+    "is_active": true
+  },
+  {
+    "id": 11,
+    "name": "SENIOR CITIZEN FEMALE",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, FREE THYROID PROFILE, VIT B12, VIT B9, Vit D(25 hydroxy), IRON STUDY, Amylase, Lipase, CEA, CA 125, ANTI CCP, RH Factor - Quantitative, TOTAL IgE, TESTOSTERONE, TOTAL, EGFR, Microalbumin Createnine Ratio, URINE R/M",
+    "price": 4499,
+    "type": "PACKAGE",
+    "category": "SENIOR CITIZEN",
+    "is_active": true
+  },
+  {
+    "id": 12,
+    "name": "SENIOR CITIZEN MALE \r\nWITH CARDIAC MARKERS",
+    "description": "CBC, ESR, CRP, FBS, HbA1c, KFT (9 param), LFT, LIPID PROFILE, FREE THYROID PROFILE, VIT B12, VIT B9, Vit D(25 hydroxy), IRON STUDY, Amylase, Lipase, CEA, PSA, CA 125, ANTI CCP, RH Factor - Quantitative, TOTAL IgE, TESTOSTERONE, TOTAL, ADVANCED CARDIAC RISK MARKER\r\n(Apolipoprotein A-1, Lipoprotein (A), Apolipoprotein B,\r\nhsCRP, APO B/ APO A1 RATIO, HOMOCYSTEINE), EGFR, Microalbumin Createnine Ratio, URINE R/M",
+    "price": 5499,
+    "type": "PACKAGE",
+    "category": "SENIOR CITIZEN",
+    "is_active": true
+  },
+  {
+    "id": 13,
+    "name": "DIABETIC SCREENING BASIC",
+    "description": "Creatinine, FBS, HbA1c",
+    "price": 449,
+    "type": "PACKAGE",
+    "category": "Diabetic Screening",
+    "is_active": true
+  },
+  {
+    "id": 14,
+    "name": "DIABETIC SCREENING ADVANCED",
+    "description": "CBC, FBS, HbA1c, KFT (6 param), LFT, LIPID PROFILE, URINE R/M",
+    "price": 1499,
+    "type": "PACKAGE",
+    "category": "Diabetic Screening",
+    "is_active": true
+  },
+  {
+    "id": 15,
+    "name": "DIABETIC SCREENING ADVANCED PLUS",
+    "description": "CBC, FBS, HbA1c, KFT (9 param), EGFR, LFT, LIPID PROFILE, PPBS, TSH, URINE R/M",
+    "price": 2299,
+    "type": "PACKAGE",
+    "category": "Diabetic Screening",
+    "is_active": true
+  },
+  {
+    "id": 16,
+    "name": "ANC PANEL BASIC",
+    "description": "CBC, BLOOD GROUP, BT-CT, BSL-R, HIV 1 & 2 ANTIBODY (Card Test), HbsAg, VDRL, TSH, URINE R/M",
+    "price": 1499,
+    "type": "PACKAGE",
+    "category": "Anc Panel",
+    "is_active": true
+  },
+  {
+    "id": 17,
+    "name": "ANC PANEL ADVANCED",
+    "description": "CBC, BLOOD GROUP, BT-CT, BSL-R, HCV, HIV 1 & 2 ANTIBODY (Card Test), HbsAg, VDRL, TSH, HCV, PT INR, URINE R/M",
+    "price": 2299,
+    "type": "PACKAGE",
+    "category": "Anc Panel",
+    "is_active": true
+  },
+  {
+    "id": 18,
+    "name": "ANC PANEL ADVANCED PLUS",
+    "description": "CBC, BLOOD GROUP, BT-CT, BSL-R, HCV, HIV 1 & 2 ANTIBODY (Card Test), HbsAg, VDRL, TSH, HCV, PT INR, HB ELECTROPHORESIS, URINE R/M",
+    "price": 3199,
+    "type": "PACKAGE",
+    "category": "Anc Panel",
+    "is_active": true
+  },
+  {
+    "id": 19,
+    "name": "ARTHRITIS SCREENING BASIC",
+    "description": "CBC, ESR, CRP, CALCIUM, URIC ACID, RA FACTOR (RHEUMATOID ARTHRITIS FACTOR), ANTI STREPTOLISIN O (ASO) Quantitaive, ANA By ELISA",
+    "price": 1249,
+    "type": "PACKAGE",
+    "category": "Arthritis Screening",
+    "is_active": true
+  },
+  {
+    "id": 20,
+    "name": "ARTHRITIS SCREENING ADVANCED",
+    "description": "CBC, ESR, CRP, CALCIUM, URIC ACID, RA FACTOR (RHEUMATOID ARTHRITIS FACTOR), ANTI STREPTOLISIN O (ASO) Quantitaive, ANTI CCP, ANA by IFA",
+    "price": 3249,
+    "type": "PACKAGE",
+    "category": "Arthritis Screening",
+    "is_active": true
+  },
+  {
+    "id": 21,
+    "name": "ARTHRITIS SCREENING ADVANCED PLUS",
+    "description": "CBC, ESR, CRP, CALCIUM, URIC ACID, RA FACTOR (RHEUMATOID ARTHRITIS FACTOR), ANTI STREPTOLISIN O (ASO) Quantitaive, ANTI CCP, ANA By BLOT, HLA b 27",
+    "price": 5499,
+    "type": "PACKAGE",
+    "category": "Arthritis Screening",
+    "is_active": true
+  },
+  {
+    "id": 22,
+    "name": "FEVER PROFILE BASIC",
+    "description": "CBC, ESR, MP SMEAR (Malarial Parasite), BILIRUBIN, SGOT, SGPT, CRP, WIDAL(SLIDE AGGLUTINATION), URINE R/M",
+    "price": 999,
+    "type": "PACKAGE",
+    "category": "Fever",
+    "is_active": true
+  },
+  {
+    "id": 23,
+    "name": "FEVER PROFILE ADVANCED",
+    "description": "CBC, ESR, BILIRUBIN, SGOT, SGPT, CRP, WIDAL(SLIDE AGGLUTINATION), DENGUE NS1 IGG IGM CARD TEST, RMT, URINE R/M",
+    "price": 1999,
+    "type": "PACKAGE",
+    "category": "Fever",
+    "is_active": true
+  },
+  {
+    "id": 24,
+    "name": "FEVER PROFILE ADVANCED PLUS",
+    "description": "CBC, ESR, BILIRUBIN, SGOT, SGPT, CRP, WIDAL(SLIDE AGGLUTINATION), DENGUE NS1 IGG IGM CARD TEST, RMT, TYPHI IGG IGM, CHIKUNGUNYA ANTIBODIES IGG & IGM, URINE R/M",
+    "price": 2999,
+    "type": "PACKAGE",
+    "category": "Fever",
+    "is_active": true
+  },
+  {
+    "id": 25,
+    "name": "ANAEMIA SCREENING ADVANCED",
+    "description": "CBC, FERRITIN, IRON STUDY, VIT B12, VIT B9",
+    "price": 1499,
+    "type": "PACKAGE",
+    "category": "Anaemia Screening",
+    "is_active": true
+  },
+  {
+    "id": 26,
+    "name": "CARDIAC SCREENING ADVANCED",
+    "description": "CBC, BLOOD SUGAR - F & PP, HbA1c, KFT (6 param), LFT, LIPID PROFILE, ADVANCED CARDIAC RISK MARKER\r\n(Apolipoprotein A-1, Lipoprotein (A), Apolipoprotein B,\r\nhsCRP, APO B/ APO A1 RATIO, HOMOCYSTEINE)",
+    "price": 3349,
+    "type": "PACKAGE",
+    "category": "Cardiac Screening",
+    "is_active": true
+  },
+  {
+    "id": 27,
+    "name": "CARDIAC SCREENING ADVANCED PLUS",
+    "description": "CBC, BLOOD SUGAR - F & PP, HbA1c, KFT (9 param), LFT, LIPID PROFILE, TFT, NT-PRO-BNP, HSCRP, HIGH SENSITIVE TROPONIN I - QUANTITATIVE, EGFR, URINE R/M, ADVANCED CARDIAC RISK MARKER\r\n(Apolipoprotein A-1, Lipoprotein (A), Apolipoprotein B,\r\nhsCRP, APO B/ APO A1 RATIO, HOMOCYSTEINE)",
+    "price": 5549,
+    "type": "PACKAGE",
+    "category": "Cardiac Screening",
+    "is_active": true
+  },
+  {
+    "id": 28,
+    "name": "PCOD SCREENING ADVANCED",
+    "description": "CBC, BLOOD SUGAR - F & PP, HbA1c, UTSH, FSH-LH-PRL, TESTOSTERONE TOTAL, Estradiol, Progesteron",
+    "price": 2499,
+    "type": "PACKAGE",
+    "category": "Pcod Screening",
+    "is_active": true
+  },
+  {
+    "id": 29,
+    "name": "HAIRFALL SCREENING BASIC",
+    "description": "CBC, CALCIUM, FERRITIN, TSH, VIT B12",
+    "price": 1199,
+    "type": "PACKAGE",
+    "category": "Hairfall Screening",
+    "is_active": true
+  },
+  {
+    "id": 30,
+    "name": "HAIRFALL SCREENING MEN'S ADVANCED",
+    "description": "CBC, CALCIUM, DHT, FERRITIN, IRON STUDY, MAGNESIUM, PHOSPHORUS, SHBG, TFT, VIT B12, Vit D(25 hydroxy)",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Hairfall Screening",
+    "is_active": true
+  },
+  {
+    "id": 31,
+    "name": "HAIFALL SCREENING WOMEN'S ADVANCED",
+    "description": "CBC, CALCIUM, FERRITIN, FSH-LH-PRL, IRON STUDY, MAGNESIUM, PHOSPHORUS, Sex Hormone Binding Globulin (SHBG), TESTOSTERONE TOTAL, TFT, VDRL, VIT B12, Vit D(25 hydroxy)",
+    "price": 5499,
+    "type": "PACKAGE",
+    "category": "Haifall Screening",
+    "is_active": true
+  },
+  {
+    "id": 32,
+    "name": "CHILDREN'S HEALTH PACKAGE ADVANCE",
+    "description": "CBC, ESR, BLOOD GROUP, FBS, IRON STUDY, KFT (9 param), LFT, LIPID PROFILE, TFT, VIT B12, VIT B9, URINE R/M, Vit D(25 hydroxy)",
+    "price": 2099,
+    "type": "PACKAGE",
+    "category": "ChildrenS Health",
+    "is_active": true
+  },
+  {
+    "id": 33,
+    "name": "WOMEN'S SKIN CARE",
+    "description": "ANA, CBC, DHEAS, ESTRADIOL (E2), FBS, FSH-LH-PRL, HbA1c, PROGESTERONE, TESTOSTERONE TOTAL, TOTAL IgE, UTSH, VIT B12, Vit D(25 hydroxy)",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Skin Care",
+    "is_active": true
+  },
+  {
+    "id": 34,
+    "name": "APLA PROFILE ADVANCED",
+    "description": "PT INR, APTT, LUPUS ANTICOAGULANT (LA), ACLA IGG IGM, APLA IGG IGM, BETA 2 GLYCOPROTEIN IGG IGM",
+    "price": 5499,
+    "type": "PACKAGE",
+    "category": "Apla",
+    "is_active": true
+  },
+  {
+    "id": 35,
+    "name": "THALASSEMIA PROFILE",
+    "description": "CBC, Vit, FERRITIN, HB ELECTROPHORESIS, SERUM IRON, PERIPHERAL SMEAR EXAMINATION",
+    "price": 1499,
+    "type": "PACKAGE",
+    "category": "Thalassemia",
+    "is_active": true
+  },
+  {
+    "id": 36,
+    "name": "TUMOR PROFILE MEN'S BASIC",
+    "description": "HEMOGRAM (CBC + ESR), LDH, CARCINO EMBRYONIC ANTIGEN (CEA), ALPHA FETOPROTEIN (AFP), CA-19.9, PSA",
+    "price": 1999,
+    "type": "PACKAGE",
+    "category": "Tumor",
+    "is_active": true
+  },
+  {
+    "id": 37,
+    "name": "TUMOR PROFILE MEN'S ADVANCED",
+    "description": "HEMOGRAM (CBC + ESR), LDH, CARCINO EMBRYONIC ANTIGEN (CEA), ALPHA FETOPROTEIN (AFP), CA-19.9, BETA HCG, THYROGLOBULIN, CALCITONIN, FREE-PSA",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Tumor",
+    "is_active": true
+  },
+  {
+    "id": 38,
+    "name": "TUMOR PROFILE WOMEN'S BASIC",
+    "description": "HEMOGRAM (CBC + ESR), LDH, CARCINO EMBRYONIC ANTIGEN (CEA), ALPHA FETOPROTEIN (AFP), CA-19.9, CA-125, CA-15.3",
+    "price": 1999,
+    "type": "PACKAGE",
+    "category": "Tumor",
+    "is_active": true
+  },
+  {
+    "id": 39,
+    "name": "TUMOR PROFILE WOMEN'S ADVANCED",
+    "description": "HEMOGRAM (CBC + ESR), LDH, CARCINO EMBRYONIC ANTIGEN (CEA), ALPHA FETOPROTEIN (AFP), CA-19.9, BETA HCG, CA-125, CA-15.3, THYROGLOBULIN, CALCITONIN",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Tumor",
+    "is_active": true
+  },
+  {
+    "id": 40,
+    "name": "PREMARITAL PROFILE ADVANCED (COUPLE )",
+    "description": "CBC, BLOOD GROUP, HIV 1 & 2 ANTIBODY (Card Test), HCV (CARD TEST), HbsAg (CARD TEST), VDRL, HB ELECTROPHORESIS",
+    "price": 3999,
+    "type": "PACKAGE",
+    "category": "Premarital",
+    "is_active": true
+  },
+  {
+    "id": 41,
+    "name": "THYROID SCREENING ADVANCED",
+    "description": "ANTI THYROID ANTIBODIES (ATG & TPO), FREE TFT, HbA1c, LIPID PROFILE",
+    "price": 1530,
+    "type": "PACKAGE",
+    "category": "Thyroid Screening",
+    "is_active": true
+  },
+  {
+    "id": 42,
+    "name": "BONE PROFILE BASIC",
+    "description": "ALBUMIN, ALKALINE PHOSPHATASE (ALP), CALCIUM, MAGNESIUM, PHOSPHORUS, URIC ACID, VIT B12, Vit D(25 hydroxy)",
+    "price": 1799,
+    "type": "PACKAGE",
+    "category": "Bone",
+    "is_active": true
+  },
+  {
+    "id": 43,
+    "name": "BONE PROFILE ADVANCED",
+    "description": "ALBUMIN, ALKALINE PHOSPHATASE (ALP), CALCIUM, MAGNESIUM, PHOSPHORUS, URIC ACID, VIT B12, Vit D(25 hydroxy), PTH (PARATHYROID HORMONE), ANTI CCP, RA FACTOR (RHEUMATOID ARTHRITIS FACTOR)",
+    "price": 3299,
+    "type": "PACKAGE",
+    "category": "Bone",
+    "is_active": true
+  },
+  {
+    "id": 44,
+    "name": "Complete Blood Count (CBC)",
+    "description": "Evaluates overall health and detects a wide range of disorders, including anemia, infection and leukemia.",
+    "price": 350,
+    "type": "INDIVIDUAL",
+    "category": "Hematology",
+    "is_active": true
+  },
+  {
+    "id": 45,
+    "name": "Fasting Blood Sugar (FBS)",
+    "description": "Measures blood glucose levels after an overnight fast to screen for diabetes.",
+    "price": 150,
+    "type": "INDIVIDUAL",
+    "category": "Diabetic",
+    "is_active": true
+  },
+  {
+    "id": 46,
+    "name": "HbA1c (Glycosylated Hemoglobin)",
+    "description": "Measures average blood sugar levels over the past 3 months.",
+    "price": 450,
+    "type": "INDIVIDUAL",
+    "category": "Diabetic",
+    "is_active": true
+  },
+  {
+    "id": 47,
+    "name": "Thyroid Stimulating Hormone (TSH)",
+    "description": "Evaluates thyroid gland function.",
+    "price": 300,
+    "type": "INDIVIDUAL",
+    "category": "Thyroid",
+    "is_active": true
+  },
+  {
+    "id": 48,
+    "name": "Lipid Profile",
+    "description": "Measures cholesterol and triglycerides to assess risk of cardiovascular disease.",
+    "price": 600,
+    "type": "INDIVIDUAL",
+    "category": "Cardiac",
+    "is_active": true
+  },
+  {
+    "id": 49,
+    "name": "Vitamin D (25-OH)",
+    "description": "Measures the level of Vitamin D in the blood to screen for deficiency.",
+    "price": 1200,
+    "type": "INDIVIDUAL",
+    "category": "Vitamins",
+    "is_active": true
+  },
+  {
+    "id": 50,
+    "name": "Vitamin B12",
+    "description": "Measures Vitamin B12 levels to check for anemia or nerve issues.",
+    "price": 900,
+    "type": "INDIVIDUAL",
+    "category": "Vitamins",
+    "is_active": true
+  },
+  {
+    "id": 51,
+    "name": "Liver Function Test (LFT)",
+    "description": "Panel of tests used to help diagnose and monitor liver disease or damage.",
+    "price": 700,
+    "type": "INDIVIDUAL",
+    "category": "Liver",
+    "is_active": true
+  },
+  {
+    "id": 52,
+    "name": "Kidney Function Test (KFT)",
+    "description": "Panel of tests to evaluate how well the kidneys are working.",
+    "price": 650,
+    "type": "INDIVIDUAL",
+    "category": "Kidney",
+    "is_active": true
+  },
+  {
+    "id": 53,
+    "name": "Urine Routine & Microscopy",
+    "description": "Analyzes urine to detect urinary tract infections, kidney disease, or diabetes.",
+    "price": 200,
+    "type": "INDIVIDUAL",
+    "category": "Routine",
+    "is_active": true
+  }
+]
