@@ -148,7 +148,7 @@ export const getStaffAppointments = async (req: Request, res: Response) => {
       LEFT JOIN appointments a ON b.id = a.booking_id
       LEFT JOIN booking_tests bt ON b.id = bt.booking_id
       LEFT JOIN catalog_tests ct ON bt.test_id = ct.id
-      WHERE b.status IN ('PENDING', 'CONFIRMED', 'IN_PROGRESS')
+      WHERE b.status IN ('PENDING', 'CONFIRMED')
       GROUP BY b.id, p.first_name, p.last_name, a.scheduled_time, u.address_line, u.city
       ORDER BY b.created_at ASC
     `);
