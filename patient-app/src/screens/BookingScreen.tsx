@@ -7,7 +7,7 @@ export default function BookingScreen({ route, navigation }: any) {
   
   // Normalize tests: either an array from TestsScreen or a single test from PackagesScreen
   const bookingItems = tests || [{ name: testName, price: price }];
-  const subtotal = bookingItems.reduce((sum: number, item: any) => sum + (item.price || 0), 0);
+  const subtotal = bookingItems.reduce((sum: number, item: any) => sum + Number(item.price || 0), 0);
 
   const [collectionType, setCollectionType] = useState<'HOME' | 'LAB'>('HOME');
   const [selectedSlot, setSelectedSlot] = useState('');
@@ -70,8 +70,8 @@ export default function BookingScreen({ route, navigation }: any) {
           <Text style={styles.sectionTitle}>Selected Tests</Text>
           {bookingItems.map((item: any, idx: number) => (
             <View key={idx} style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8}}>
-              <Text style={styles.testName}>{item.name}</Text>
-              <Text style={styles.testPrice}>₹{item.price}</Text>
+              <Text style={[styles.testName, {flex: 1, marginRight: 8}]}>{item.name}</Text>
+              <Text style={styles.testPrice}>₹{Number(item.price)}</Text>
             </View>
           ))}
           <View style={{height: 1, backgroundColor: '#e2e8f0', marginVertical: 8}} />
