@@ -90,10 +90,16 @@ export default function RecordsScreen() {
               <View style={styles.cardFooter}>
                 <Text style={styles.date}>{dateStr}</Text>
                 {item.status === 'COMPLETED' ? (
-                  <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload}>
-                    <Download color="#fff" size={16} style={{ marginRight: 6 }} />
-                    <Text style={styles.downloadText}>Download Report</Text>
-                  </TouchableOpacity>
+                  item.report_url ? (
+                    <TouchableOpacity style={styles.downloadBtn} onPress={handleDownload}>
+                      <Download color="#fff" size={16} style={{ marginRight: 6 }} />
+                      <Text style={styles.downloadText}>Download Report</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <Text style={{color: '#3b82f6', fontWeight: 'bold', fontSize: 12}}>
+                      Awaiting Report
+                    </Text>
+                  )
                 ) : (
                   <Text style={{color: '#eab308', fontWeight: 'bold', fontSize: 12}}>
                     {item.status === 'PENDING' ? 'Awaiting Tech' : item.status}
