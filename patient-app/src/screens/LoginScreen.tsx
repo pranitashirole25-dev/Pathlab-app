@@ -19,7 +19,7 @@ export default function LoginScreen({ navigation }: any) {
     if (phone.length < 10) return;
     setLoading(true);
     try {
-      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/send-otp', {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/otp/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: '+91' + phone })
@@ -41,7 +41,7 @@ export default function LoginScreen({ navigation }: any) {
     if (otp.length < 6) return;
     setLoading(true);
     try {
-      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/verify-otp', {
+      const res = await fetch('https://pathology-backend-ipnf.onrender.com/api/auth/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: '+91' + phone, otp })
