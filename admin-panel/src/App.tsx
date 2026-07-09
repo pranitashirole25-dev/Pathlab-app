@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Search, Bell, LogOut, FileText, Users, Calendar, Activity, Clock, CheckCircle2 } from 'lucide-react';
+import { Search, Bell, LogOut, FileText, Users, Calendar, Activity, Clock, CheckCircle2, List } from 'lucide-react';
 
 const data = [
   { name: 'Nov \'22', completed: 400 },
@@ -29,7 +29,47 @@ const mockLeaves = [
 ];
 
 function App() {
-  const [currentView, setCurrentView] = useState<'DASHBOARD' | 'SCORECARDS' | 'LEAVES'>('DASHBOARD');
+  const [currentView, setCurrentView] = useState<'DASHBOARD' | 'SCORECARDS' | 'LEAVES' | 'CATALOG'>('DASHBOARD');
+  
+  // Catalog State
+  const [catalog, setCatalog] = useState<any[]>([]);
+  const [editingTest, setEditingTest] = useState<any>(null);
+  const [editForm, setEditForm] = useState({ price: '', description: '' });
+
+  useEffect(() => {
+    if (currentView === 'CATALOG') {
+      fetchCatalog();
+    }
+  }, [currentView]);
+
+  const fetchCatalog = () => {
+    fetch('https://pathology-backend-ipnf.onrender.com/api/catalog/tests')
+      .then(res => res.json())
+      .then(data => setCatalog(data))
+      .catch(console.error);
+  };
+
+  const handleEditClick = (test: any) => {
+    setEditingTest(test);
+    setEditForm({ price: test.price, description: test.description });
+  };
+
+  const handleUpdateTest = async () => {
+    try {
+      await fetch(`https://pathology-backend-ipnf.onrender.com/api/catalog/tests/${editingTest.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          price: editForm.price,
+          description: editForm.description
+        })
+      });
+      setEditingTest(null);
+      fetchCatalog(); // Refresh list
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-darkBg text-slate-200">
@@ -63,6 +103,13 @@ function App() {
             <Calendar className="w-5 h-5 mr-3" />
             Leave Management
           </button>
+          <button 
+            onClick={() => setCurrentView('CATALOG')}
+            className={`w-full flex items-center px-4 py-3 rounded-xl font-medium transition-colors ${currentView === 'CATALOG' ? 'bg-primary/10 text-primary' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'}`}
+          >
+            <List className="w-5 h-5 mr-3" />
+            Tests & Packages
+          </button>
         </nav>
         
         <div className="p-4 border-t border-glassBorder">
@@ -86,6 +133,7 @@ function App() {
               {currentView === 'DASHBOARD' && 'Admin Dashboard'}
               {currentView === 'SCORECARDS' && 'Staff Scorecards'}
               {currentView === 'LEAVES' && 'Leave Management'}
+              {currentView === 'CATALOG' && 'Tests & Packages Config'}
             </h2>
             <p className="text-sm text-slate-400">October 26, 2023 | 09:42 AM</p>
           </div>
@@ -310,8 +358,93 @@ function App() {
             </div>
           )}
 
+          {currentView === 'CATALOG' && (
+            <div className="glass-card">
+              <h3 className="text-xl font-semibold text-white mb-6">Tests & Packages Configuration</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-slate-300">
+                  <thead className="bg-slate-800/50 text-slate-400">
+                    <tr>
+                      <th className="px-6 py-4 font-medium rounded-tl-xl">Name</th>
+                      <th className="px-6 py-4 font-medium">Category</th>
+                      <th className="px-6 py-4 font-medium">Price (₹)</th>
+                      <th className="px-6 py-4 font-medium">Description</th>
+                      <th className="px-6 py-4 font-medium text-right rounded-tr-xl">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {catalog.map(test => (
+                      <tr key={test.id} className="border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
+                        <td className="px-6 py-4 font-medium text-white">{test.name}</td>
+                        <td className="px-6 py-4">
+                          <span className="bg-primary/20 text-primary px-2 py-1 rounded text-xs">
+                            {test.category}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-success font-semibold">₹{test.price}</td>
+                        <td className="px-6 py-4 text-slate-400 text-xs truncate max-w-[200px]">{test.description}</td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            onClick={() => handleEditClick(test)}
+                            className="bg-primary/20 text-primary px-3 py-1.5 rounded hover:bg-primary hover:text-white transition-colors text-xs font-medium"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
+
+      {/* Edit Modal */}
+      {editingTest && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-darkBg border border-glassBorder rounded-2xl w-[500px] p-6 shadow-2xl">
+            <h3 className="text-xl font-bold text-white mb-6">Edit {editingTest.name}</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-slate-400 mb-1">Price (₹)</label>
+                <input 
+                  type="number" 
+                  value={editForm.price}
+                  onChange={(e) => setEditForm({...editForm, price: e.target.value})}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-slate-400 mb-1">Description / Included Tests</label>
+                <textarea 
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary h-24"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-8">
+              <button 
+                onClick={() => setEditingTest(null)}
+                className="px-4 py-2 rounded-lg text-slate-400 hover:text-white transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleUpdateTest}
+                className="px-6 py-2 bg-primary text-white rounded-lg font-medium shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
